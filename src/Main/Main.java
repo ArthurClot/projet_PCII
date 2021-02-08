@@ -33,7 +33,8 @@ public class Main {
 		fenetre.addKeyListener(new Controls(affichage,etat));//pour que la fenetre ecoute les pressedKeys
 		/** creation des Threads*/
 		//new Thread(new Voler(etat,affichage)).start();
-		new Thread(new Avancer(road,affichage)).start();			
+		new Thread(new Avancer(road,affichage)).start();	
+		
 	  }		
 
 }
