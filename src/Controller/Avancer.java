@@ -13,7 +13,9 @@ public class Avancer implements Runnable {
 	private static final int TIMEMAX=60;//c'est la valeur maximale du temps que l'on peut rajouter entre chaque mise a jour du thread de défilment de la route (décide la vitesse).
 	
 	private  int time=TIMEMAX-1; //c'est le temps que l'on veut entre chaque mise a jour de la fenetre quand le parcours avance.
-	private float coeffAcceleration=1;
+	private double coeffAcceleration=1;
+	private double COEFF_MAX=1.1;
+	private double COEFF_MIN=0.9;
 	private static boolean flagDeFin=false; //condition d'activation du Thread
 
 	/** CONSTRUCTEUR */
@@ -48,22 +50,32 @@ public class Avancer implements Runnable {
 	
 	/**modifie la vitesse de defilement en fonction d'un coefficient */
 	private void variationSpeed() {
+		System.out.println("time = "+this.time);
+		System.out.println("coeff = "+this.coeffAcceleration);
+		System.out.println("deplacement = "+etat.getDeplacement());
 		
 		if (etat.testRalentissement()==true) {
-			//coeffAcceleration*=0.9;
-			this.time=TIMEMAX+(int)coeffAcceleration;			
-			etat.setDeplacement((int)coeffAcceleration);	
-			if(etat.setFin())
-				flagDeFin=true;
+			if(coeffAcceleration>=COEFF_MIN)
+				coeffAcceleration*=1.01;
+			int tjrPlusLent=(int)(this.time*coeffAcceleration);
+			if(tjrPlusLent<TIMEMAX)
+				this.time=tjrPlusLent;
+			
+			if((etat.getDeplacement()*coeffAcceleration)>=0)
+				etat.setDeplacement(-1);	
+			System.out.println("ralentir");
+			
 							
 		}
 		else {
-		coeffAcceleration*=1.1;
-		int tjrPlusVite=TIMEMAX-(int)coeffAcceleration;
-		if(tjrPlusVite>3)
+		if(coeffAcceleration<=COEFF_MAX)
+			coeffAcceleration*=0.999;
+		int tjrPlusVite=(int)(this.time*coeffAcceleration);
+		if(tjrPlusVite>TIMEMIN)
 			this.time=tjrPlusVite;
-		if(Etat.getDeplacementMax()>coeffAcceleration)
-			etat.setDeplacement((int)coeffAcceleration);
+		if((etat.getDeplacement()*coeffAcceleration)<Etat.getDeplacementMax())
+			etat.setDeplacement(1);
+		System.out.println("accelere");
 		}
 	}
 	
@@ -79,8 +91,10 @@ public class Avancer implements Runnable {
 		
 		
 		
-		while(flagDeFin==false) {	
-			variationSpeed();
+		while(flagDeFin==false) {
+			if(etat.setFin())
+				flagDeFin=true;
+			//variationSpeed();
 			road.setPosition() ;    //la position referente du parcours augmente et ont modifie du coup l'ordonnee des points des lignes.
 			road.MaJLignes();       //on regarde si il faut supprimer des points et en creer dans les arraylist Lignes (si oui on le fait)
 			affichage.revalidate();

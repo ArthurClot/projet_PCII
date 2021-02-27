@@ -35,7 +35,7 @@ public class Main {
 		/**activation de la fenetre et ajout de contenu (affichage)*/
 	    fenetre.add(affichage);
 		fenetre.pack(); 
-		fenetre.setBackground(Color.BLUE);
+		fenetre.setBackground(Color.cyan);
 		fenetre.setVisible(true);
 		fenetre.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	
 		

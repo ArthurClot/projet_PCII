@@ -44,8 +44,15 @@ public class Etat {
 	/**
 	 * on ajoute x a la valeur de this.deplacement
 	 */
-	public void setDeplacement(int x) {
-		this.deplacement=x;
+	public void setDeplacement(double x) {
+		
+		this.deplacement=(int)(this.deplacement*x);
+	}
+	
+	public int getDeplacement() {
+		
+			return deplacement;
+		
 	}
 	/**************AUTRE METHODES *******************/
 
@@ -77,7 +84,7 @@ public class Etat {
 		Point p1d =road.getLigneDroite().get(indexP1); 
 		Point p2d =road.getLigneDroite().get(indexP2);
 		float pented = (float)((p2d.x) - (p1d.x) )/ ((float)(p2d.y) - (float)(p1d.y)); 
-		float pointxDeDroite =  (-pented*(p2d.y-Affichage.getOrdVehicule())+p2d.x)-Affichage.getLargVehicule();
+		float pointxDeDroite =  (-pented*(p2d.y-Affichage.getOrdVehicule())+p2d.x)+Affichage.getLargVehicule();
 		
 		/*System.out.println();
 		System.out.println("------------------");
@@ -110,7 +117,7 @@ public class Etat {
 	}
 
 		public boolean setFin() {
-			if (deplacement==0) {
+			if (deplacement<=0) {
 				return true;
 			}
 			return false;
