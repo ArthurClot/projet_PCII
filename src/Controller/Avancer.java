@@ -56,14 +56,14 @@ public class Avancer implements Runnable {
 		if (etat.testRalentissement()==false) { //on va plus vite
 			
 			if(this.time>TIMEMIN)
-			this.time-=(this.time/TIMEMAX)/3; //le "/3" cest pour que temporiser un peu l'acceleration)
+			this.time-=(this.time/TIMEMAX)/4; //le "/3" cest pour que temporiser un peu l'acceleration)
 		
 		}
 			
 		else {//on va plus lentement :
 			
 			if(this.time<TIMEMAX)
-			this.time+=(this.time/TIMEMAX)/3;//le "/6" cest pour que temporiser un peu la decceleration)
+			this.time+=(this.time/TIMEMAX)/4;//le "/3" cest pour que temporiser un peu la decceleration)
 			
 		}
 			

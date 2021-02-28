@@ -59,7 +59,7 @@ public class Affichage extends JPanel {
 		this.etat = eta;
 		this.road = roa;
 		this.setPreferredSize(new Dimension(LARG_FENETRE, HAUT_FENETRE));
-		Color e = Color.getHSBColor(0.58F,0.83F , 0.91F);
+		Color e = Color.getHSBColor(0.53F,0.93F , 0.95F);
 		this.setBackground(e);
 		//this.fleches = new Controls(this,etat);
 		//this.addKeyListener(new Controls(this,etat));
@@ -127,10 +127,16 @@ public class Affichage extends JPanel {
 			Point pH2=this.road.getLigneDroite().get(i+1);
 			 
 			
-			g.setColor(Color.red);	//on choisit la couleur de la caverne (et avant des lignes  : voir commentaires ci-dessous)
+			g.setColor(Color.red);	//on choisit la couleur de la route 
 			
-			g.drawLine(pB1.x,pB1.y,pB2.x,pB2.y);// dessine la ligne du bas entre deux points de de l'arraylist<Point> ligneBas
-			g.drawLine(pH1.x,pH1.y,pH2.x,pH2.y);// dessine la ligne du bas entre deux points de de l'arraylist<Point> ligneBas
+			if(pB2.y<HORIZON) {
+				g.drawLine(pB1.x,pB1.y,pB2.x,HORIZON);// dessine la ligne du bas entre deux points de de l'arraylist<Point> ligneBas
+				g.drawLine(pH1.x,pH1.y,pH2.x,HORIZON);// dessine la ligne du bas entre deux points de de l'arraylist<Point> ligneBas
+			}
+			else {
+				g.drawLine(pB1.x,pB1.y,pB2.x,pB2.y);// dessine la ligne du bas entre deux points de de l'arraylist<Point> ligneBas
+				g.drawLine(pH1.x,pH1.y,pH2.x,pH2.y);// dessine la ligne du bas entre deux points de de l'arraylist<Point> ligneBas				
+			}
 			
 			// faire grossir les images qui se rapporchent (de maniere simpliste)
 			if(pB1.y>=HORIZON) {   			
