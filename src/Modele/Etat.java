@@ -3,7 +3,7 @@ package Modele;
 
 import java.awt.Point;
 
-import Controller.Avancer;
+
 import Vue.Affichage;
 
 
@@ -46,7 +46,7 @@ public class Etat {
 	 */
 	public void setDeplacement(double x) {
 		
-		this.deplacement=(int)(this.deplacement*x);
+		this.deplacement=(int)x;
 	}
 	
 	public int getDeplacement() {

@@ -9,12 +9,11 @@ public class Avancer implements Runnable {
 	private Road road;
 	private Affichage affichage;
 	private Etat etat;
-	private static final int TIMEMIN=2; //c'est la valeur minimale du temps que l'on veut entre chaque mise a jour du thread de défilment de la route (décide la vitesse).
-	private static final int TIMEMOYEN=30; //c'est la valeur minimale du temps que l'on veut entre chaque mise a jour du thread de défilment de la route (décide la vitesse).
+	private static final int TIMEMIN=4; //c'est la valeur minimale du temps que l'on veut entre chaque mise a jour du thread de défilment de la route (décide la vitesse).
 	private static final int TIMEMAX=60;//c'est la valeur maximale du temps que l'on peut rajouter entre chaque mise a jour du thread de défilment de la route (décide la vitesse).
 
-	private  int time=TIMEMAX-1; //c'est le temps que l'on veut entre chaque mise a jour de la fenetre quand le parcours avance.
-	private double acceleration=1;
+	private  double time=TIMEMAX-2; //c'est le temps que l'on veut entre chaque mise a jour de la fenetre quand le parcours avance que l'on initialise au TIMEMAX-1);
+	
 	
 	private static boolean flagDeFin=false; //condition d'activation du Thread
 
@@ -29,7 +28,7 @@ public class Avancer implements Runnable {
 
 	/** Methodes pour GET et SET la variable time*/
 
-	public int getTime() {
+	public double getTime() {
 		return this.time;
 	}
 
@@ -50,38 +49,26 @@ public class Avancer implements Runnable {
 
 	/**modifie la vitesse de defilement en fonction d'un coefficient */
 	private void variationSpeed() {
-		System.out.println("time = "+this.time);
-		System.out.println("acceleration = "+this.acceleration);
+				
+		//System.out.println("deplacement = "+etat.getDeplacement());
+
 		
-		System.out.println("deplacement = "+etat.getDeplacement());
-
-		//ON VA PLUS VITE
-		if (etat.testRalentissement()==false) {
-			if(acceleration<TIMEMOYEN)
-				acceleration+=0.005;
-			int tjrPlusVite=this.time-(int)(this.time*(acceleration/TIMEMOYEN));
-			if(tjrPlusVite>=TIMEMIN)
-				this.time=tjrPlusVite;
-
-			//if((etat.getDeplacement()*coeffAcceleration)<Etat.getDeplacementMax())
-				//etat.setDeplacement(1);
-				
-		}
-
-		//ON VA PLUS LENTEMENT
-		else {
-
-			if(acceleration>=0)
-				acceleration-=0.01;
-			int tjrPlusLent=this.time+(int)(((TIMEMOYEN+acceleration)/TIMEMOYEN));
-			if(tjrPlusLent<TIMEMAX)
-				this.time=tjrPlusLent;
+		if (etat.testRalentissement()==false) { //on va plus vite
 			
-			//if((etat.getDeplacement()*coeffAcceleration)>=0)
-				//etat.setDeplacement(-1);	
-				
-
+			if(this.time>TIMEMIN)
+			this.time-=(this.time/TIMEMAX)/3; //le "/3" cest pour que temporiser un peu l'acceleration)
+		
 		}
+			
+		else {//on va plus lentement :
+			
+			if(this.time<TIMEMAX)
+			this.time+=(this.time/TIMEMAX)/3;//le "/6" cest pour que temporiser un peu la decceleration)
+			
+		}
+			
+		etat.setDeplacement((TIMEMAX/2)-(this.time/2));	
+		
 	}
 
 
@@ -104,7 +91,7 @@ public class Avancer implements Runnable {
 			road.MaJLignes();       //on regarde si il faut supprimer des points et en creer dans les arraylist Lignes (si oui on le fait)
 			affichage.revalidate();
 			affichage.repaint();        //on reactualise l'image depuis l'instance affichage
-			try { Thread.sleep(this.time); } //on utilise Thread.sleep pour qu'il se passe un temps entre chaque Road.setPosition().
+			try { Thread.sleep((int)this.time); } //on utilise Thread.sleep pour qu'il se passe un temps entre chaque Road.setPosition().
 			catch (Exception e) { e.printStackTrace(); }
 		}
 	}
