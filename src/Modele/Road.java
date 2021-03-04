@@ -14,13 +14,14 @@ public class Road {
 	private  int position =0; // position s'incremente tant que la partie continue
 	private final static int AVANCE = 1;//valeur d'incrementation de la position
 
-	/** Creation des Arraylist pour contenir les Points des Ligne Gauche et Droite */
+	/** Creation des Arraylist pour contenir les Points des Ligne Gauche et Droite ainsi qu'un tableau pour les abscisses*/
 	private  ArrayList<Point> ligneGauche= new ArrayList<Point>();//la liste de points que l'on relira pour faire le parcours de gauche.
 	private  ArrayList<Point> ligneDroite= new ArrayList<Point>();//la liste de points que l'on relira pour faire le parcours de droite.
-
+	private ArrayList<Integer> abscissesRoute = new ArrayList<Integer>();; //la liste des diffÈrentes abscisses des portions de routes initialisees dans la methode initZigzagTab.
+	
 	/** Constantes pour borner et aider a definir les abscisses et ordonnees des points de lignes generes aleatoirement */
-	private static final int BORNE_MIN =(100); //absc la + a gauche de la fenetre possible (pour ligneGauche)
-	private static final int BORNE_MAX =(800);//absc la + a droite de la fenetre pour ligneGauche
+	private static final int BORNE_MIN =(50); //absc la + a gauche de la fenetre possible 
+	private static final int BORNE_MAX =(850);//absc la + a droite de la fenetre 
 	private static final int ESPACE_MIN = 350; //on veut que chaques ordonnees des points soit au minimum espaces de 350.
 	
 	
@@ -28,11 +29,12 @@ public class Road {
 	private static final int DEPARTDROITE = Affichage.getAbsVehicule()+150;//le depart du parcoursHaut sera a droite du vehicule
 	
 	private static final Random rand = new Random(); //variable aleatoire pour pouvoir utiliser la bibliotheque java.util.Random.
-	private  static final float ECARTEMENT=  (float) 0.45; //donne la taille de pixel dont s'ecarte les deux cotes de la route tout en se rapprochent du bas  
+	private  static final float ECARTEMENT=  (float) 0.5; //donne la taille de pixel dont s'ecarte les deux cotes de la route tout en se rapprochent du bas  
 	
 	/**CONSTRUCTEUR*/
 	public Road(){
 		initLignes(); //on initialise les lignes a la creation d'une l'instance de Road
+		initZigzagTab(); ////on initialise les abscissesRoute a la creation d'une l'instance de Road
 	}
 
 	/***************METHODES GET ******************/
@@ -92,15 +94,28 @@ public class Road {
 		int ByeByeY =ligneGauche.get(1).y;//on recup l'ordonnee du deuxieme point de ligneGauche (c'est la meme ordonnee que pour le point de ligneDroite)
 		if(ByeByeY>=Affichage.getHauteurFenetre()) { //si l'ordonnee ByeByeY (du deuxieme point de la ligne) est sorti de la fenetre (en bas),				
 			this.ligneGauche.remove(0); // on supprime (le premier point) celui en dessous de ByeByeY pour ligneGauche et ligneDroite
-			this.ligneDroite.remove(0); 	
+			this.ligneDroite.remove(0); 
+			this.abscissesRoute.remove(0);
 			ajouteFindeListesRandomP();//et on rajoute un point au bout des 2 listes			
 		}
+		//on ecarte les lignes gauches et droites progressivement (tout les 4 pixels) a partir du moment ou elles depassent l'horizon
 		for (int i=0;i<ligneGauche.size();i++) {				
 			if (ligneGauche.get(i).y>Affichage.getHorizon()) {
-				ligneGauche.get(i).x-=ECARTEMENT;
-				ligneDroite.get(i).x+=ECARTEMENT*2;
+				if(ligneGauche.get(i).y%3==0) {
+					ligneGauche.get(i).x-=ECARTEMENT;
+					ligneDroite.get(i).x+=ECARTEMENT*2;
+				}
+				if (((ligneGauche.get(i).x+ligneDroite.get(i).x)/2)<abscissesRoute.get(i)-1) {
+					ligneGauche.get(i).x+=1;
+					ligneDroite.get(i).x+=1;
+				}
+				else if (((ligneGauche.get(i).x+ligneDroite.get(i).x)/2)>abscissesRoute.get(i)+1) {
+					ligneGauche.get(i).x-=1;
+					ligneDroite.get(i).x-=1;
+				}
 			}
-				//ligneGauche.set(i,ligneGauche.set(i).x=
+			
+				
 		}		
 	}
 
@@ -111,14 +126,23 @@ public class Road {
 	private void ajouteFindeListesRandomP() {
 		int y= ((ligneGauche.get(ligneGauche.size()-1).y)-rand.nextInt(100))-ESPACE_MIN;//abscisse du dernier point de ligneBas + une random val(+ESPACE_MIN)
 		//ligne suivante: l'ordonnee aleatoire du point est bornee en fonction de la taille de la fenetre et de l'ovale.(/!\ borne 2fois utilisee)
-		int x=rand.nextInt(BORNE_MAX)+BORNE_MIN; 
+		int x=Affichage.getLargeurFenetre()/2; 
 		Point pG = new Point(x,y);
-		Point pD = new Point((x),y);
+		Point pD = new Point(x,y);
 		ligneGauche.add(ligneGauche.size(),pG); // on ajoute le point aux coordonees "aleatoires" a la fin de l'arraylist ligne
 		ligneDroite.add(ligneDroite.size(),pD); // on ajoute le point aux coordonees "aleatoires" a la fin de l'arraylist ligne
+		abscissesRoute.add(rand.nextInt(BORNE_MAX)+BORNE_MIN);
 	}
-
-
+	
+	/**initZigzagTab permet de creer les virages de la route en retournant un tableau rempli de valeur aleatoires 
+	 *  etant l'abscisse entre deux points gauche et droite de la route.
+	 */
+	private ArrayList<Integer> initZigzagTab() {
+		for(int i=0; i < ligneGauche.size(); i++){
+		    abscissesRoute.add(rand.nextInt(BORNE_MAX)+BORNE_MIN) ;
+		}
+		return abscissesRoute;
+	}
 	/** initLigne rempli l'Arraylist<point> lignegauche et ligneDroite de points ayant:
 	 *  une ordonnee croisssante(mais qui "avance" de valeur aleatoire en valeur aleatoire avec un ESPACE_MIN minimum)
 	 *  et une abscisse aleatoire bornee
@@ -130,10 +154,10 @@ public class Road {
 		ligneGauche.add(startG); //on ajoute les points aux Arraylist ligneBas et ligneHaut
 		ligneDroite.add(startD);		
 		int y=Affichage.getHauteurFenetre()-ESPACE_MIN; //le premier y Random va commencer apres cet ord
-		while(y>(-Affichage.getHauteurFenetre()/2)) { //on veut creer des point jusqu'au 5/4 de la hauteur de la fenetre
+		while(y>(-Affichage.getHauteurFenetre())) { //on veut creer des point jusqu'au 5/4 de la hauteur de la fenetre
 			y=(y-rand.nextInt(100))-ESPACE_MIN;//creation d'une ord random commun aux deux lignes avec un espace minimum entre deux ord
 			//ligne suivante: les absc aleatoires des points sont bornees en fonction de la largeur de la fenetre et de la voiture.
-			int x=rand.nextInt(BORNE_MAX)+BORNE_MIN; 
+			int x=Affichage.getLargeurFenetre()/2; 
 			Point pG = new Point(x,y);
 			Point pD = new Point(x,y); //on d√©cale l'absc pour correspondre a un point a droite (pour ligneDroite)		
 			ligneGauche.add(pG); // on ajoute les point aux coordonees "aleatoires" a l'arraylist ligneGauche et l'arraylist ligneDroite

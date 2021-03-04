@@ -9,10 +9,10 @@ public class Avancer implements Runnable {
 	private Road road;
 	private Affichage affichage;
 	private Etat etat;
-	private static final int TIMEMIN=4; //c'est la valeur minimale du temps que l'on veut entre chaque mise a jour du thread de défilment de la route (décide la vitesse).
+	private static final int TIMEMIN=6; //c'est la valeur minimale du temps que l'on veut entre chaque mise a jour du thread de défilment de la route (décide la vitesse).
 	private static final int TIMEMAX=60;//c'est la valeur maximale du temps que l'on peut rajouter entre chaque mise a jour du thread de défilment de la route (décide la vitesse).
 
-	private  double time=TIMEMAX-2; //c'est le temps que l'on veut entre chaque mise a jour de la fenetre quand le parcours avance que l'on initialise au TIMEMAX-1);
+	private  double time=30; //c'est le temps que l'on veut entre chaque mise a jour de la fenetre quand le parcours avance que l'on initialise au TIMEMAX-1);
 	
 	
 	private static boolean flagDeFin=false; //condition d'activation du Thread
@@ -56,14 +56,14 @@ public class Avancer implements Runnable {
 		if (etat.testRalentissement()==false) { //on va plus vite
 			
 			if(this.time>TIMEMIN)
-			this.time-=(this.time/TIMEMAX)/4; //le "/3" cest pour que temporiser un peu l'acceleration)
+			this.time-=(this.time/TIMEMAX)/10; //le "/3" cest pour que temporiser un peu l'acceleration)
 		
 		}
 			
 		else {//on va plus lentement :
 			
 			if(this.time<TIMEMAX)
-			this.time+=(this.time/TIMEMAX)/4;//le "/3" cest pour que temporiser un peu la decceleration)
+			this.time+=(this.time/TIMEMAX)/2;//le "/3" cest pour que temporiser un peu la decceleration)
 			
 		}
 			
