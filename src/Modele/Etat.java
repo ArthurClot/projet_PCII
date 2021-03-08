@@ -24,7 +24,7 @@ public class Etat {
 	public Etat(Road roa) {
 		this.road =roa;
 		positionVehicule = Affichage.getAbsVehicule(); //je prefere initialiser positionVoiture l'ors de l'instanciation de la Classe.
-
+		
 	}
 
 	/**************METHODES GET et SET *******************/

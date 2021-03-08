@@ -12,17 +12,19 @@ import Vue.Affichage;
 
 public class Controls implements KeyListener {
 
-	Affichage affichage ;
-	Etat etat;
-
+	private Affichage affichage ;
+	private Etat etat;
+	
+	//CONSTRUCTEUR:
 	public Controls(Affichage aff,Etat eta){
 		this.affichage=aff;
 		this.etat=eta;
 	}
 
-
+	
 
 	public void keyMove(KeyEvent e) {
+		affichage.setDirection(0); //code pour STRAIGHT (par defaut)
 		switch (e.getKeyCode()) {
 		/*case KeyEvent.VK_UP:
 			etat.move(Direction.up); //aller en haut 
@@ -31,12 +33,14 @@ public class Controls implements KeyListener {
 			etat.move(Direction.down);//aller en bas
 			break;*/
 		case KeyEvent.VK_LEFT:
+			affichage.setDirection(1);//code pour left
 			affichage.repaint();	
 			etat.move(Direction.left);//aller a' gauche
 			affichage.revalidate();
 			//affichage.repaint();	
 			break;
 		case KeyEvent.VK_RIGHT:
+			affichage.setDirection(2);//code pour right
 			affichage.repaint();
 			etat.move(Direction.right);//aller a' droite
 			affichage.revalidate();
@@ -54,12 +58,14 @@ public class Controls implements KeyListener {
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		this.keyMove( e);
+		//this.keyMove( e);
 	}
 	
 	
 	public void keyPressed(KeyEvent e) {
+		
 		this.keyMove (e);
+		
 	
 	}
 	
@@ -72,7 +78,7 @@ public class Controls implements KeyListener {
 
 @Override
 	public void keyReleased(KeyEvent arg0) {
-		// TODO Auto-generated method stub
+	affichage.setDirection(0); //code pour STRAIGHT (par defaut)
 		
 	}
 

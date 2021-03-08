@@ -25,11 +25,12 @@ import Modele.Road;
 @SuppressWarnings("serial")   // parce que je n'ai pas compris dans notre exercice l'interet d'avoir un serial ID number .
 public class Affichage extends JPanel {
 
-	/** pour les interactions avec la classe Etat*/
+	/** pour les interactions avec les autres classes */
 	private  Etat etat;
-	private Controls fleches; 
 	private Road road;
 	private Ressources ress;
+	private int direction =0 ; //indique la direction du vehicule (0->straight,1->gauche,2->droite) cette variable et modifiee par la classe Controls
+
 	/* Constantes */
 
 	
@@ -95,17 +96,38 @@ public class Affichage extends JPanel {
 		return LARG_VEHICULE;
 	}
 
+	public void setDirection(int x) {
+		 direction=x;
+	}
 	/**************METHODES DE DESSIN *******************/
 		
 	/**
 	 * methode qui dessine le vehicule
 	 * @param g
 	 */
-	private void dessineVehicule(Graphics g) {
-		g.drawImage(ress.getImage(1), this.etat.getPositionVehicule(), ORD_VEHICULE, LARG_VEHICULE, HAUT_VEHICULE, this);
+	private void dessineVehicule(Graphics g,int d) {
+			switch (d) {
+			/*case up:				
+				break;
+			case down:				
+				break;*/
+			case 0: //va tout droit
+				g.drawImage(ress.getImage(2), this.etat.getPositionVehicule(), ORD_VEHICULE, LARG_VEHICULE, HAUT_VEHICULE, this);
+				break;
+			case 1: //va a gauche
+				g.drawImage(ress.getImage(3), this.etat.getPositionVehicule(), ORD_VEHICULE, LARG_VEHICULE, HAUT_VEHICULE, this);
+				break;		
+			case 2: //va a droite
+				g.drawImage(ress.getImage(4), this.etat.getPositionVehicule(), ORD_VEHICULE, LARG_VEHICULE, HAUT_VEHICULE, this);
+				break;
+			
+			}	
+	
+			
+	}
 		
 	
-	}
+	
 
 
 	/**cette methode dessine le parcours ( deux lignes brisees (gauche et droite) :
@@ -140,12 +162,12 @@ public class Affichage extends JPanel {
 			
 			// faire grossir les images qui se rapporchent (de maniere simpliste)
 			if(pB1.y>=HORIZON) {   			
-				g.drawImage(ress.getImage(2),pB1.x,pB1.y, larg_bouee+((pB1.y*pB1.y)/5000),  larg_bouee+((pB1.y*pB1.y)/5000), this);//!\TROUVER des calculs d'incrementation  plus "logiques"		
-				g.drawImage(ress.getImage(2),pH1.x,pH1.y, larg_bouee+((pB1.y*pB1.y)/5000), hautBouee+((pB1.y*pB1.y)/5000), this);//!\ TROUVER des calculs d'incrementation  plus "logiques"		
+				g.drawImage(ress.getImage(1),pB1.x,pB1.y, larg_bouee+((pB1.y*pB1.y)/5000),  larg_bouee+((pB1.y*pB1.y)/5000), this);//!\TROUVER des calculs d'incrementation  plus "logiques"		
+				g.drawImage(ress.getImage(1),pH1.x,pH1.y, larg_bouee+((pB1.y*pB1.y)/5000), hautBouee+((pB1.y*pB1.y)/5000), this);//!\ TROUVER des calculs d'incrementation  plus "logiques"		
 			}				
 			else{
-				g.drawImage(ress.getImage(2),pB1.x,pB1.y, larg_bouee,  larg_bouee, this);
-				g.drawImage(ress.getImage(2),pH1.x,pH1.y, larg_bouee, hautBouee, this);
+				g.drawImage(ress.getImage(1),pB1.x,pB1.y, larg_bouee,  larg_bouee, this);
+				g.drawImage(ress.getImage(1),pH1.x,pH1.y, larg_bouee, hautBouee, this);
 			}
 		}
 		
@@ -193,7 +215,7 @@ public class Affichage extends JPanel {
 		
 		
 		dessineRoad(g);
-		dessineVehicule(g);
+		dessineVehicule(g,this.direction);
 		g.drawImage(ress.getImage(0), 0, 0, LARG_FENETRE, HORIZON, this);// image "sky background" d'apres  l'horizon
 		dessineScore(g);
 	}

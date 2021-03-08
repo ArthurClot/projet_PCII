@@ -103,7 +103,7 @@ public class Road {
 			ajouteFindeListesRandomP();//et on rajoute un point au bout des 2 listes			
 		}
 		for (int i=0;i<ligneGauche.size();i++) {
-			//on icrémente le score quand une paire de points passent sur l'ordonee du vehicule
+			//on icremente le score quand une paire de points passent sur l'ordonee du vehicule
 			if(ligneGauche.get(i).y==Affichage.getOrdVehicule()) {
 				score++;
 			}
