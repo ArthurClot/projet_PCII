@@ -30,7 +30,7 @@ public class Road {
 	
 	private static final Random rand = new Random(); //variable aleatoire pour pouvoir utiliser la bibliotheque java.util.Random.
 	private  static final float ECARTEMENT=  (float) 0.5; //donne la taille de pixel dont s'ecarte les deux cotes de la route tout en se rapprochent du bas  
-	
+	private int score=0;//s'incremente a chaques fois qu'une paire de points dépassent l'ordonnée du vehicule
 	/**CONSTRUCTEUR*/
 	public Road(){
 		initLignes(); //on initialise les lignes a la creation d'une l'instance de Road
@@ -58,7 +58,11 @@ public class Road {
 	public static int getAvance() {
 		return AVANCE;
 	}
-
+	
+	public int getScore() {
+		return this.score;
+	}
+	
 	/**
 	 * Cette methode get est un peu speciale car elle permet de recuperer l'index du point le plus proche en dessous du vehicule 
 	 * (marche pour les points de ligneDroite et ligneGauche)
@@ -98,18 +102,23 @@ public class Road {
 			this.abscissesRoute.remove(0);
 			ajouteFindeListesRandomP();//et on rajoute un point au bout des 2 listes			
 		}
-		//on ecarte les lignes gauches et droites progressivement (tout les 4 pixels) a partir du moment ou elles depassent l'horizon
-		for (int i=0;i<ligneGauche.size();i++) {				
+		for (int i=0;i<ligneGauche.size();i++) {
+			//on icrémente le score quand une paire de points passent sur l'ordonee du vehicule
+			if(ligneGauche.get(i).y==Affichage.getOrdVehicule()) {
+				score++;
+			}
+			//on ecarte les lignes gauches et droites progressivement (tout les 4 pixels) a partir du moment ou elles depassent l'horizon
 			if (ligneGauche.get(i).y>Affichage.getHorizon()) {
 				if(ligneGauche.get(i).y%3==0) {
 					ligneGauche.get(i).x-=ECARTEMENT;
 					ligneDroite.get(i).x+=ECARTEMENT*2;
 				}
-				if (((ligneGauche.get(i).x+ligneDroite.get(i).x)/2)<abscissesRoute.get(i)-1) {
+				//on modifie l'abscisse des lignes gauches et droites a partir du moment ou elles depassent l'horizon pour faire les virages
+				if (((ligneGauche.get(i).x+ligneDroite.get(i).x)/2)<abscissesRoute.get(i)-2) {
 					ligneGauche.get(i).x+=1;
 					ligneDroite.get(i).x+=1;
 				}
-				else if (((ligneGauche.get(i).x+ligneDroite.get(i).x)/2)>abscissesRoute.get(i)+1) {
+				else if (((ligneGauche.get(i).x+ligneDroite.get(i).x)/2)>abscissesRoute.get(i)+2) {
 					ligneGauche.get(i).x-=1;
 					ligneDroite.get(i).x-=1;
 				}

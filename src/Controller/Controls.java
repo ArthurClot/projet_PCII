@@ -54,7 +54,7 @@ public class Controls implements KeyListener {
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		//this.keyMove( arg0);
+		this.keyMove( e);
 	}
 	
 	

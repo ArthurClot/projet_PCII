@@ -127,7 +127,7 @@ public class Affichage extends JPanel {
 			Point pH2=this.road.getLigneDroite().get(i+1);
 			 
 			
-			g.setColor(Color.red);	//on choisit la couleur de la route 
+			g.setColor(Color.BLUE);	//on choisit la couleur de la route 
 			
 			if(pB2.y<HORIZON) {
 				g.drawLine(pB1.x,pB1.y,pB2.x,HORIZON);// dessine la ligne du bas entre deux points de de l'arraylist<Point> ligneBas
@@ -159,7 +159,7 @@ public class Affichage extends JPanel {
 	private void dessineScore(Graphics g) {
 		g.setColor(Color.RED);//choix de la couleur des lettres et chiffres du score
 		g.setFont(new Font( "Cambria" ,Font.BOLD,30));// choix de la police et de la taille des lettres et chiffres du score
-		g.drawString("Score :"+(this.road.getPosition()/Road.getAvance())/10, LARG_FENETRE-200, HAUT_FENETRE/20);//on place et dessine un score se basant sur la position
+		g.drawString("Score :"+this.road.getScore(), LARG_FENETRE-200, HAUT_FENETRE/20);//on place et dessine un score qui s'incremente a chaque depassement de points
 	}
 	/**
 	 * methode qui dessine/affiche un message de fin avec le score final et termine les thread par la meme occasion
