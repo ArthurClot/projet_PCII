@@ -41,7 +41,7 @@ public class Affichage extends JPanel {
 	
 	/**dimmensions intitales d'une bouee*/
 	private  int larg_bouee = 1; 
-	public int hautBouee = 1; 
+	
 	
 	/** dimensions de la fenetre */
 	private static final int LARG_FENETRE = 1000;
@@ -143,32 +143,30 @@ public class Affichage extends JPanel {
 		
 		for(int i=0;i<taille-1;i++) {//entre chaques paire de points ( d'arraylist ligne on remplie les tableaux)
 			
-			Point pB1=this.road.getLigneGauche().get(i);   //les points pour les lignes (de-commenter aussi l'import pour les Points)
-			Point pB2=this.road.getLigneGauche().get(i+1);
-			Point pH1=this.road.getLigneDroite().get(i);
-			Point pH2=this.road.getLigneDroite().get(i+1);
+			Point pG1=this.road.getLigneGauche().get(i);   //les points pour les lignes (de-commenter aussi l'import pour les Points)
+			Point pG2=this.road.getLigneGauche().get(i+1);
+			Point pD1=this.road.getLigneDroite().get(i);
+			Point pD2=this.road.getLigneDroite().get(i+1);
 			 
 			
 			g.setColor(Color.BLUE);	//on choisit la couleur de la route 
 			
-			if(pB2.y<HORIZON) {
-				g.drawLine(pB1.x,pB1.y,pB2.x,HORIZON);// dessine la ligne du bas entre deux points de de l'arraylist<Point> ligneBas
-				g.drawLine(pH1.x,pH1.y,pH2.x,HORIZON);// dessine la ligne du bas entre deux points de de l'arraylist<Point> ligneBas
+			if(pG2.y<HORIZON) {
+				g.drawLine(pG1.x,pG1.y,pG2.x,HORIZON);
+				g.drawLine(pD1.x,pD1.y,pD2.x,HORIZON);
 			}
 			else {
-				g.drawLine(pB1.x,pB1.y,pB2.x,pB2.y);// dessine la ligne du bas entre deux points de de l'arraylist<Point> ligneBas
-				g.drawLine(pH1.x,pH1.y,pH2.x,pH2.y);// dessine la ligne du bas entre deux points de de l'arraylist<Point> ligneBas				
+				g.drawLine(pG1.x,pG1.y,pG2.x,pG2.y);
+				g.drawLine(pD1.x,pD1.y,pD2.x,pD2.y);				
 			}
 			
 			// faire grossir les images qui se rapporchent (de maniere simpliste)
-			if(pB1.y>=HORIZON) {   			
-				g.drawImage(ress.getImage(1),pB1.x,pB1.y, larg_bouee+((pB1.y*pB1.y)/5000),  larg_bouee+((pB1.y*pB1.y)/5000), this);//!\TROUVER des calculs d'incrementation  plus "logiques"		
-				g.drawImage(ress.getImage(1),pH1.x,pH1.y, larg_bouee+((pB1.y*pB1.y)/5000), hautBouee+((pB1.y*pB1.y)/5000), this);//!\ TROUVER des calculs d'incrementation  plus "logiques"		
+			if(pG1.y>=HORIZON) { 
+				int tailleBouee=larg_bouee+((pG1.y*pG1.y)/5000);//!\peut etre trouver un calcul d'incrementation de la taille plus "logique"		
+				g.drawImage(ress.getImage(1),(pG1.x-tailleBouee/2),(pG1.y-tailleBouee/2), tailleBouee,  tailleBouee, this);
+				g.drawImage(ress.getImage(1),(pD1.x-tailleBouee/2),(pD1.y-tailleBouee/2), tailleBouee, tailleBouee, this);	
 			}				
-			else{
-				g.drawImage(ress.getImage(1),pB1.x,pB1.y, larg_bouee,  larg_bouee, this);
-				g.drawImage(ress.getImage(1),pH1.x,pH1.y, larg_bouee, hautBouee, this);
-			}
+			
 		}
 		
 	}
