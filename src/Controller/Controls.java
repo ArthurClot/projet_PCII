@@ -33,18 +33,14 @@ public class Controls implements KeyListener {
 			etat.move(Direction.down);//aller en bas
 			break;*/
 		case KeyEvent.VK_LEFT:
-			affichage.setDirection(1);//code pour left
-			affichage.repaint();	
+			affichage.setDirection(1);//code pour left	
 			etat.move(Direction.left);//aller a' gauche
-			affichage.revalidate();
-			//affichage.repaint();	
+			affichage.revalidate();				
 			break;
 		case KeyEvent.VK_RIGHT:
-			affichage.setDirection(2);//code pour right
-			affichage.repaint();
+			affichage.setDirection(2);//code pour right			
 			etat.move(Direction.right);//aller a' droite
-			affichage.revalidate();
-			//affichage.repaint();	
+			affichage.revalidate();				
 			break;
 		}	
 	

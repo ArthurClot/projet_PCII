@@ -28,6 +28,7 @@ public class Affichage extends JPanel {
 	/** pour les interactions avec les autres classes */
 	private  Etat etat;
 	private Road road;
+	private Controls fleches; 
 	private Ressources ress;
 	private int direction =0 ; //indique la direction du vehicule (0->straight,1->gauche,2->droite) cette variable et modifiee par la classe Controls
 
@@ -47,7 +48,6 @@ public class Affichage extends JPanel {
 	private static final int HAUT_FENETRE = 800;
 
 	
-	
 	/**coordonnées de la voiture*/
 	private static final int ABS_VEHICULE = LARG_FENETRE/2; //l abcsisse initiale de la voiture. C'est Etat.positionVoiture que l'on utilisera en pratique.
 	private static final int ORD_VEHICULE = (HAUT_FENETRE-(HAUT_VEHICULE*2))-200; //la hauteur (ordonnnee) initiale de la voiture. 
@@ -60,10 +60,10 @@ public class Affichage extends JPanel {
 		this.etat = eta;
 		this.road = roa;
 		this.setPreferredSize(new Dimension(LARG_FENETRE, HAUT_FENETRE));
-		Color e = Color.getHSBColor(0.53F,0.93F , 0.95F);
+		Color e = Color.getHSBColor(0.53F,0.93F , 0.95F);//la couleur de la mer
 		this.setBackground(e);
-		//this.fleches = new Controls(this,etat);
-		//this.addKeyListener(new Controls(this,etat));
+		this.fleches = new Controls(this,etat);
+		
 	}
 	
 	/**************METHODES GET *******************/
@@ -187,11 +187,9 @@ public class Affichage extends JPanel {
 	 * methode qui dessine/affiche un message de fin avec le score final et termine les thread par la meme occasion
 	 * @param g
 	 */
-	private void dessineFin(Graphics g) {
-		//Avancer.setfin(); //termine le thread de la Classe Avancer
-		
+	private void dessineFin(Graphics g) {		
 		//ligne suivante : affiche un message indiquant que la partie est finie est indique un score final en se basant sur la position (voir dessineScore())
-		JOptionPane.showMessageDialog(this, "Fin de partie !  Score : "+(this.road.getPosition()/Road.getAvance())/10);
+		JOptionPane.showMessageDialog(this, "Fin de partie !  Score : "+this.road.getScore());
 	}
 	
 	
@@ -203,14 +201,12 @@ public class Affichage extends JPanel {
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g); //permet de raffraichir la fenetre en appelant repaint
-		/*
+		
 		 if (Avancer.getFlagDeFin()) {//si la partie est finie
 			removeKeyListener(fleches);//enleve le MouseListener cest a dire l'action de saut produite par un clique
 			dessineFin(g);	
-			g.clearRect(0, 0, LARG_FENETRE, HAUT_FENETRE);// pour plutot mettre un image genre de batman a la fin.. (pas eu le temps)  	  
-
 		}
-		*/	
+			
 		//g.clearRect(0, 0, LARG_FENETRE, HAUT_FENETRE); //pour aider a redessiner la fenetre, efface le precedent affichage sur celle ci		
 		
 		
