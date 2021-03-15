@@ -31,6 +31,7 @@ public class Affichage extends JPanel {
 	private Controls fleches; 
 	private Ressources ress;
 	private int direction =0 ; //indique la direction du vehicule (0->straight,1->gauche,2->droite) cette variable et modifiee par la classe Controls
+	private int score=0;//s'incremente a chaques fois qu'une paire de points dépassent l'ordonnée du vehicule
 
 	/* Constantes */
 
@@ -49,7 +50,7 @@ public class Affichage extends JPanel {
 
 	
 	/**coordonnÃ©es de la voiture*/
-	private static final int ABS_VEHICULE = LARG_FENETRE/2; //l abcsisse initiale de la voiture. C'est Etat.positionVoiture que l'on utilisera en pratique.
+	private static final int ABS_VEHICULE = LARG_FENETRE/2; //l abcsisse initiale de la voiture. C'est etat.getPositionVehicule() que l'on utilisera en pratique.
 	private static final int ORD_VEHICULE = (HAUT_FENETRE-(HAUT_VEHICULE*2))-200; //la hauteur (ordonnnee) initiale de la voiture. 
 	
 	private static final int HORIZON = (HAUT_FENETRE/2)-(HAUT_FENETRE/3); // donne l'ordonnee ou se positionne l'horizon
@@ -146,9 +147,7 @@ public class Affichage extends JPanel {
 			Point pG1=this.road.getLigneGauche().get(i);   //les points pour les lignes (de-commenter aussi l'import pour les Points)
 			Point pG2=this.road.getLigneGauche().get(i+1);
 			Point pD1=this.road.getLigneDroite().get(i);
-			Point pD2=this.road.getLigneDroite().get(i+1);
-			 
-			
+			Point pD2=this.road.getLigneDroite().get(i+1);			
 			g.setColor(Color.BLUE);	//on choisit la couleur de la route 
 			
 			if(pG2.y<HORIZON) {
@@ -158,8 +157,7 @@ public class Affichage extends JPanel {
 			else {
 				g.drawLine(pG1.x,pG1.y,pG2.x,pG2.y);
 				g.drawLine(pD1.x,pD1.y,pD2.x,pD2.y);				
-			}
-			
+			}			
 			// faire grossir les images qui se rapporchent (de maniere simpliste)
 			if(pG1.y>=HORIZON) { 
 				int tailleBouee=larg_bouee+((pG1.y*pG1.y)/5000);//!\peut etre trouver un calcul d'incrementation de la taille plus "logique"		
@@ -177,9 +175,16 @@ public class Affichage extends JPanel {
 	 * @param g
 	 */
 	private void dessineScore(Graphics g) {
+		//on icremente le score quand le vehicule "depasse une paire de points en passant entre les deux
+		for(int i = 0; i<this.road.getLigneGauche().size();i++) {
+		if(this.road.getLigneGauche().get(i).y==ORD_VEHICULE //la paire de point depasse le vehicule
+		   && this.road.getLigneGauche().get(i).x<this.etat.getPositionVehicule() //vehicule droite du point gauche
+		   && this.road.getLigneDroite().get(i).x>this.etat.getPositionVehicule() ) // vehicule gauche du point droit
+				score++;	
+		}
 		g.setColor(Color.RED);//choix de la couleur des lettres et chiffres du score
 		g.setFont(new Font( "Cambria" ,Font.BOLD,30));// choix de la police et de la taille des lettres et chiffres du score
-		g.drawString("Score :"+this.road.getScore(), LARG_FENETRE-200, HAUT_FENETRE/20);//on place et dessine un score qui s'incremente a chaque depassement de points
+		g.drawString("Score :"+score, LARG_FENETRE-200, HAUT_FENETRE/20);//on place et dessine un score qui s'incremente a chaque depassement de points
 	}
 	/**
 	 * methode qui dessine/affiche un message de fin avec le score final et termine les thread par la meme occasion
@@ -187,7 +192,7 @@ public class Affichage extends JPanel {
 	 */
 	private void dessineFin(Graphics g) {		
 		//ligne suivante : affiche un message indiquant que la partie est finie est indique un score final en se basant sur la position (voir dessineScore())
-		JOptionPane.showMessageDialog(this, "Fin de partie !  Score : "+this.road.getScore());
+		JOptionPane.showMessageDialog(this, "Fin de partie !  Score : "+this.score);
 	}
 	
 	
@@ -203,10 +208,7 @@ public class Affichage extends JPanel {
 		 if (Avancer.getFlagDeFin()) {//si la partie est finie
 			removeKeyListener(fleches);//enleve le MouseListener cest a dire l'action de saut produite par un clique
 			dessineFin(g);	
-		}
-			
-		//g.clearRect(0, 0, LARG_FENETRE, HAUT_FENETRE); //pour aider a redessiner la fenetre, efface le precedent affichage sur celle ci		
-		
+		}		
 		
 		dessineRoad(g);
 		dessineVehicule(g,this.direction);

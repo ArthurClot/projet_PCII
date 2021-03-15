@@ -13,7 +13,7 @@ public class Etat {
 
 	private  int positionVehicule; //variable qui donne l'abscisse de la voiture, initilalisee dans le constructeur
 
-	private static final int DEPLACEMENT_MAX=30;	// variable definisant la taille d'un deplacement de la voiture
+	private static final int DEPLACEMENT_MAX=20;	// variable definisant la taille d'un deplacement de la voiture
 	private  int deplacement= DEPLACEMENT_MAX;	// variable definisant la taille d'un deplacement de la voiture
 
 	
@@ -45,7 +45,7 @@ public class Etat {
 	 * on ajoute x a la valeur de this.deplacement
 	 */
 	public void setDeplacement(double x) {
-		
+		if((int)x<=DEPLACEMENT_MAX)
 		this.deplacement=(int)x;
 	}
 	

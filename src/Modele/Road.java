@@ -29,8 +29,9 @@ public class Road {
 	private static final int DEPARTDROITE = Affichage.getAbsVehicule()+150;//le depart du parcoursHaut sera a droite du vehicule
 	
 	private static final Random rand = new Random(); //variable aleatoire pour pouvoir utiliser la bibliotheque java.util.Random.
-	private  static final float ECARTEMENT=  (float) 0.5; //donne la taille de pixel dont s'ecarte les deux cotes de la route tout en se rapprochent du bas  
-	private int score=0;//s'incremente a chaques fois qu'une paire de points dépassent l'ordonnée du vehicule
+	private  static final float ECARTEMENT=  (float) 0.5; //donne la taille de pixel dont s'ecarte les deux cotes de la route tout en se rapprochent du bas  	/**CONSTRUCTEUR*/
+	
+	
 	/**CONSTRUCTEUR*/
 	public Road(){
 		initLignes(); //on initialise les lignes a la creation d'une l'instance de Road
@@ -57,10 +58,6 @@ public class Road {
 
 	public static int getAvance() {
 		return AVANCE;
-	}
-	
-	public int getScore() {
-		return this.score;
 	}
 	
 	/**
@@ -90,8 +87,36 @@ public class Road {
 		this.position = this.position+AVANCE;		
 	}
 
+	/**perspectiveEtViragesLignes() permet "d'agrandir" la largeur de la route quand elle se rapproche du bas depuis l'horizon
+	 * cette methode permet aussi au deux points Gauche et droite des lignes de modifier leurs abscisses creant ainsi des "virages"
+	 */
+	private void perspectiveEtViragesLignes() {
+		for (int i=0;i<ligneGauche.size();i++) {		
+			//on ecarte les lignes gauches et droites progressivement (tout les 4 pixels) a partir du moment ou elles depassent l'horizon
+			if (ligneGauche.get(i).y>Affichage.getHorizon()) {
+				if(ligneGauche.get(i).y%3==0) {
+					ligneGauche.get(i).x-=ECARTEMENT;
+					ligneDroite.get(i).x+=ECARTEMENT*2;
+				}
+				//on modifie l'abscisse des lignes gauches et droites a partir du moment ou elles depassent l'horizon pour faire les virages			
+				//si le virage est a gauche
+				if (((ligneGauche.get(i).x+ligneDroite.get(i).x)/2)<abscissesRoute.get(i)) {
+					ligneGauche.get(i).x+=1;
+					ligneDroite.get(i).x+=1;
+				}
+				//si le virage est a droite
+				else if (((ligneGauche.get(i).x+ligneDroite.get(i).x)/2)>abscissesRoute.get(i)) {
+					ligneGauche.get(i).x-=1;
+					ligneDroite.get(i).x-=1;
+				}		
+			}
+		}
+	}
+	
+	
 	/**
-	 * MaJLignes() permet sous un certaine condition de supprimer les points qui sortent de la fenetre et d'appeller a en rajouter en bout de liste
+	 * MaJLignes() permet sous  certaines conditions de supprimer les points qui sortent de la fenetre et d'appeller a en rajouter en bout de liste
+	 *
 	 * cette methode est  appellee a chaque utilisation du thread de la Classe Avancer
 	 */
 	public void MaJLignes() {		
@@ -102,30 +127,8 @@ public class Road {
 			this.abscissesRoute.remove(0);
 			ajouteFindeListesRandomP();//et on rajoute un point au bout des 2 listes			
 		}
-		for (int i=0;i<ligneGauche.size();i++) {
-			//on icremente le score quand une paire de points passent sur l'ordonee du vehicule
-			if(ligneGauche.get(i).y==Affichage.getOrdVehicule()) {
-				score++;
-			}
-			//on ecarte les lignes gauches et droites progressivement (tout les 4 pixels) a partir du moment ou elles depassent l'horizon
-			if (ligneGauche.get(i).y>Affichage.getHorizon()) {
-				if(ligneGauche.get(i).y%3==0) {
-					ligneGauche.get(i).x-=ECARTEMENT;
-					ligneDroite.get(i).x+=ECARTEMENT*2;
-				}
-				//on modifie l'abscisse des lignes gauches et droites a partir du moment ou elles depassent l'horizon pour faire les virages
-				if (((ligneGauche.get(i).x+ligneDroite.get(i).x)/2)<abscissesRoute.get(i)-2) {
-					ligneGauche.get(i).x+=1;
-					ligneDroite.get(i).x+=1;
-				}
-				else if (((ligneGauche.get(i).x+ligneDroite.get(i).x)/2)>abscissesRoute.get(i)+2) {
-					ligneGauche.get(i).x-=1;
-					ligneDroite.get(i).x-=1;
-				}
-			}
-			
+		perspectiveEtViragesLignes();			
 				
-		}		
 	}
 
 	/**

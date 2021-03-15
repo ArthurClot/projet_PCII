@@ -11,7 +11,7 @@ import javax.imageio.ImageIO;
 public class Ressources {
 	private Image[] images; //attribut tableau d'image
 	private File dossier;
-
+	
 	/**
 	 * CONSTRUCT: charge les images dans un tableau à partir des fichiers du dossier image.
 	 */

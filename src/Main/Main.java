@@ -3,13 +3,12 @@ package Main;
 
 
 
-import java.awt.Color;
 
 import javax.swing.JFrame;
 
 import Controller.Avancer;
 import Controller.Controls;
-//import Controler.Voler;
+import Controller.Deplacer;
 import Modele.Etat;
 import Modele.Road;
 import Vue.Affichage;
@@ -29,7 +28,7 @@ public class Main {
 		Etat etat = new Etat(road);
 		Ressources ress = new Ressources();
 		Affichage affichage = new Affichage( etat,road,ress);
-		
+		Controls controls = new Controls(affichage,etat);
 		
 	
 		/**activation de la fenetre et ajout de contenu (affichage)*/
@@ -39,9 +38,10 @@ public class Main {
 		fenetre.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	
 		
 		
-		fenetre.addKeyListener(new Controls(affichage,etat));//pour que la fenetre ecoute les pressedKeys
+		 fenetre.addKeyListener(controls);//pour que la fenetre ecoute les pressedKeys
 		/** creation des Threads*/
 		new Thread(new Avancer(road,affichage,etat)).start();	// déroulement de la route
+		new Thread(new Deplacer(controls,affichage,etat)).start();	// déplacements du vehicule
 		
 	  }		
 
