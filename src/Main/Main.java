@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 
 import Controller.Avancer;
 import Controller.Controls;
-import Controller.Deplacer;
+import Controller.Mouvement;
 import Modele.Etat;
 import Modele.Road;
 import Vue.Affichage;
@@ -41,7 +41,7 @@ public class Main {
 		 fenetre.addKeyListener(controls);//pour que la fenetre ecoute les pressedKeys
 		/** creation des Threads*/
 		new Thread(new Avancer(road,affichage,etat)).start();	// déroulement de la route
-		new Thread(new Deplacer(controls,affichage,etat)).start();	// déplacements du vehicule
+		new Thread(new Mouvement(controls,affichage,etat)).start();	// déplacements du vehicule
 		
 	  }		
 
