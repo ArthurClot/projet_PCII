@@ -15,6 +15,7 @@ import Controller.Controls;
 //import Controler.Controls;
 //import Controler.Controls;
 import Modele.Etat;
+import Modele.Obstacles;
 import Modele.Road;
 
 
@@ -28,6 +29,7 @@ public class Affichage extends JPanel {
 	/** pour les interactions avec les autres classes */
 	private  Etat etat;
 	private Road road;
+	private Obstacles obstacles;
 	private Controls fleches; 
 	private Ressources ress;
 	private int direction =0 ; //indique la direction du vehicule (0->straight,1->gauche,2->droite) cette variable et modifiee par la classe Controls
@@ -56,10 +58,11 @@ public class Affichage extends JPanel {
 	private static final int HORIZON = (HAUT_FENETRE/2)-(HAUT_FENETRE/3); // donne l'ordonnee ou se positionne l'horizon
 	
 	/** CONSTRUCTEUR */
-	public Affichage(Etat eta, Road roa, Ressources r) {
+	public Affichage(Etat eta, Road roa, Ressources r, Obstacles obs) {
 		this.ress=r;
 		this.etat = eta;
 		this.road = roa;
+		this.obstacles = obs;
 		this.setPreferredSize(new Dimension(LARG_FENETRE, HAUT_FENETRE));
 		Color e = Color.getHSBColor(0.53F,0.93F , 0.95F);//la couleur de la mer
 		this.setBackground(e);
@@ -133,16 +136,15 @@ public class Affichage extends JPanel {
 
 	/**cette methode dessine le parcours ( deux lignes brisees (gauche et droite) :
 	 * pour donner l'effet de cet ligne brisee, on veut dessiner plusieurs lignes de differentes directions reliees les unes aux autres
-	 *  pour cela on recupere  une liste de Points cree et mise a jour dans la classe parcours .
+	 *  pour cela on recupere  une liste de Points cree et mise a jour dans la classe Road et Avancer .
 	 * on va aussi dans un second temps afficher des bouee a chaques points de la ligne 
-	 * et faire un début d'essai de perspective en faisant grossir les images quand elle vont depuis le haut vers le bas
+	 * et faire un essai de perspective en faisant grossir les images quand elle vont depuis le haut vers le bas
 	 * @param g
 	 */
 	private void dessineRoad(Graphics g) {
-		int taille = this.road.getLigneDroite().size();
+			
 		
-		
-		for(int i=0;i<taille-1;i++) {//entre chaques paire de points ( d'arraylist ligne on remplie les tableaux)
+		for(int i=0;i<this.road.getLigneDroite().size()-1;i++) {//entre chaques paire de points ( d'arraylist ligne on remplie les tableaux)
 			
 			Point pG1=this.road.getLigneGauche().get(i);   //les points pour les lignes (de-commenter aussi l'import pour les Points)
 			Point pG2=this.road.getLigneGauche().get(i+1);
@@ -169,7 +171,26 @@ public class Affichage extends JPanel {
 		
 	}
 
-
+	/**cette methode dessine les obstacles  :
+	 *  on  afficher des requins a chaques points de la list 
+	 * et faire un essai de perspective en faisant grossir les images quand elle vont depuis le haut vers le bas
+	 * @param g
+	 */
+	private void dessineObstacles(Graphics g) {
+		
+		for(int i=0;i<this.obstacles.getObstacleList().size()-1;i++) {
+			
+			Point pObs=this.obstacles.getObstacleList().get(i);
+			
+			// dessiner et faire grossir les images(obstacles) qui se rapporchent (de maniere simpliste)
+			if(pObs.y>=HORIZON) { 
+				int tailleObst=larg_bouee+((pObs.y*pObs.y)/5000);//!\peut etre trouver un calcul d'incrementation de la taille plus "logique"		
+				g.drawImage(ress.getImage(5),(pObs.x-tailleObst/2),(pObs.y-tailleObst/2), tailleObst,  tailleObst, this);
+			}				
+			
+		}
+		
+	}
 	/**
 	 * methode qui dessine/affiche le score au centre en haut de la fenetre
 	 * @param g
@@ -211,6 +232,7 @@ public class Affichage extends JPanel {
 		}		
 		
 		dessineRoad(g);
+		dessineObstacles(g);
 		dessineVehicule(g,this.direction);
 		g.drawImage(ress.getImage(0), 0, 0, LARG_FENETRE, HORIZON, this);// image "sky background" d'apres  l'horizon
 		dessineScore(g);

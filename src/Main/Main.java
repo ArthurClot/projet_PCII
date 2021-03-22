@@ -8,8 +8,9 @@ import javax.swing.JFrame;
 
 import Controller.Avancer;
 import Controller.Controls;
-import Controller.Mouvement;
+//import Controller.Mouvement;
 import Modele.Etat;
+import Modele.Obstacles;
 import Modele.Road;
 import Vue.Affichage;
 import Vue.Ressources;
@@ -24,10 +25,11 @@ public class Main {
 		/**Creation d'instances de Classes*/
 		JFrame fenetre = new JFrame("Ring racer");
 		Road road = new Road();
+		Obstacles obstacles = new Obstacles();
 		
 		Etat etat = new Etat(road);
 		Ressources ress = new Ressources();
-		Affichage affichage = new Affichage( etat,road,ress);
+		Affichage affichage = new Affichage( etat,road,ress,obstacles);
 		Controls controls = new Controls(affichage,etat);
 		
 	
@@ -40,8 +42,8 @@ public class Main {
 		
 		 fenetre.addKeyListener(controls);//pour que la fenetre ecoute les pressedKeys
 		/** creation des Threads*/
-		new Thread(new Avancer(road,affichage,etat)).start();	// déroulement de la route
-		new Thread(new Mouvement(controls,affichage,etat)).start();	// déplacements du vehicule
+		new Thread(new Avancer(road,affichage,etat,obstacles)).start();	// déroulement de la route
+		//new Thread(new Mouvement(controls,affichage,etat)).start();	// déplacements du vehicule
 		
 	  }		
 

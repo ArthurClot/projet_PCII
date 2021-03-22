@@ -16,13 +16,12 @@ public class Ressources {
 	 * CONSTRUCT: charge les images dans un tableau à partir des fichiers du dossier image.
 	 */
 	public Ressources() {
-		dossier = new File("src/images/");
-		System.out.println("Nombre de fichiers dans le dossier images :"+Integer.toString(dossier.listFiles().length));
+		dossier = new File("images/");
 		Image image = null;
 		images = new Image[dossier.listFiles().length];
 		for(int i=0;i<images.length;i++) {
 			try {
-				File fichier = new File("src/images/"+i+".png");
+				File fichier = new File("images/"+i+".png");
 				image = ImageIO.read(fichier);
 				images[i]=image;
 				System.out.println(fichier.toString()+"   lu");

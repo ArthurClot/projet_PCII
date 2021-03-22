@@ -2,6 +2,7 @@ package Controller;
 
 import Modele.Etat;
 import Modele.Road;
+import Modele.Obstacles;
 import Vue.Affichage;
 
 public class Avancer implements Runnable {
@@ -9,6 +10,7 @@ public class Avancer implements Runnable {
 	private Road road;
 	private Affichage affichage;
 	private Etat etat;
+	private Obstacles obstacles;
 	private static final int TIMEMIN=6; //c'est la valeur minimale du temps que l'on veut entre chaque mise a jour du thread de défilment de la route (décide la vitesse).
 	private static final int TIMEMAX=60;//c'est la valeur maximale du temps que l'on peut rajouter entre chaque mise a jour du thread de défilment de la route (décide la vitesse).
 
@@ -18,11 +20,12 @@ public class Avancer implements Runnable {
 	private static boolean flagDeFin=false; //condition d'activation du Thread
 
 	/** CONSTRUCTEUR */
-	public Avancer(Road roa,Affichage aff,Etat eta) {
+	public Avancer(Road roa,Affichage aff,Etat eta,Obstacles obs) {
 
 		this.road = roa;
 		this.affichage = aff;
 		this.etat= eta;
+		this.obstacles=obs;
 	}
 
 
@@ -89,6 +92,9 @@ public class Avancer implements Runnable {
 			variationSpeed();
 			road.setPosition() ;    //la position referente du parcours augmente et ont modifie du coup l'ordonnee des points des lignes.
 			road.MaJLignes();       //on regarde si il faut supprimer des points et en creer dans les arraylist Lignes (si oui on le fait)
+			//meme chose pour les obstacles
+			obstacles.setPosition();
+			obstacles.MaJListO();
 			affichage.revalidate();
 			affichage.repaint();        //on reactualise l'image depuis l'instance affichage
 			try { Thread.sleep((int)this.time); } //on utilise Thread.sleep pour qu'il se passe un temps entre chaque Road.setPosition().

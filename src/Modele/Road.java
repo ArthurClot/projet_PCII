@@ -79,16 +79,17 @@ public class Road {
 
 	/**
 	 * setPosition() permet de mettre a jour la position (la faire "avancer")
-	 * en meme temps que de mettre a jour l'abscisse des points de ligneHaut et ligneBas
+	 * en meme temps que de mettre a jour l'ordonnee des points de ligneGauche et ligneDroite
 	 */
 	public  void setPosition() {
-		this.ligneGauche.forEach(p -> p.y += AVANCE); //modifie l'abscisse des points dans l'arraylist ligneGauche
-		this.ligneDroite.forEach(p -> p.y += AVANCE); //modifie l'abscisse des points dans l'arraylist ligneDroite
+		this.ligneGauche.forEach(p -> p.y += AVANCE); //modifie l'ordonnee des points dans l'arraylist ligneGauche
+		this.ligneDroite.forEach(p -> p.y += AVANCE); //modifie l'ordonnee des points dans l'arraylist ligneDroite
 		this.position = this.position+AVANCE;		
 	}
 
 	/**perspectiveEtViragesLignes() permet "d'agrandir" la largeur de la route quand elle se rapproche du bas depuis l'horizon
 	 * cette methode permet aussi au deux points Gauche et droite des lignes de modifier leurs abscisses creant ainsi des "virages"
+	 *cette methode est appelee par MaJLignes()
 	 */
 	private void perspectiveEtViragesLignes() {
 		for (int i=0;i<ligneGauche.size();i++) {		
@@ -116,7 +117,7 @@ public class Road {
 	
 	/**
 	 * MaJLignes() permet sous  certaines conditions de supprimer les points qui sortent de la fenetre et d'appeller a en rajouter en bout de liste
-	 *
+	 * de plus elle modifie l'abscisse des points des lignes en appelant perspectiveEtViragesLignes()
 	 * cette methode est  appellee a chaque utilisation du thread de la Classe Avancer
 	 */
 	public void MaJLignes() {		
@@ -137,7 +138,7 @@ public class Road {
 	 */
 	private void ajouteFindeListesRandomP() {
 		int y= ((ligneGauche.get(ligneGauche.size()-1).y)-rand.nextInt(100))-ESPACE_MIN;//abscisse du dernier point de ligneBas + une random val(+ESPACE_MIN)
-		//ligne suivante: l'ordonnee aleatoire du point est bornee en fonction de la taille de la fenetre et de l'ovale.(/!\ borne 2fois utilisee)
+		//ligne suivante: l'abscisse  du point commence au centre de la fenetre 
 		int x=Affichage.getLargeurFenetre()/2; 
 		Point pG = new Point(x,y);
 		Point pD = new Point(x,y);
@@ -156,8 +157,8 @@ public class Road {
 		return abscissesRoute;
 	}
 	/** initLigne rempli l'Arraylist<point> lignegauche et ligneDroite de points ayant:
-	 *  une ordonnee croisssante(mais qui "avance" de valeur aleatoire en valeur aleatoire avec un ESPACE_MIN minimum)
-	 *  et une abscisse aleatoire bornee
+	 *  une ordonnee croisssante(mais qui "avance" de valeur aleatoire en valeur aleatoire avec un ESPACE_MIN (minimum)
+	 *  et une abscisse qui commence au centre de la fenetre
 	 *  //pour les 2 premiers points de chaques lignes, ont choisit nous meme les coordonnees pour donner un effet d'entree de circuit.
 	 */
 	private void initLignes() {
@@ -168,7 +169,7 @@ public class Road {
 		int y=Affichage.getHauteurFenetre()-ESPACE_MIN; //le premier y Random va commencer apres cet ord
 		while(y>(-Affichage.getHauteurFenetre())) { //on veut creer des point jusqu'au 5/4 de la hauteur de la fenetre
 			y=(y-rand.nextInt(100))-ESPACE_MIN;//creation d'une ord random commun aux deux lignes avec un espace minimum entre deux ord
-			//ligne suivante: les absc aleatoires des points sont bornees en fonction de la largeur de la fenetre et de la voiture.
+			//ligne suivante: l'absc aleatoires de depart des points sont au centre de la fenetre.
 			int x=Affichage.getLargeurFenetre()/2; 
 			Point pG = new Point(x,y);
 			Point pD = new Point(x,y); //on décale l'absc pour correspondre a un point a droite (pour ligneDroite)		
