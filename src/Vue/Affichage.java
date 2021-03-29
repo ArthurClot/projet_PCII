@@ -5,15 +5,10 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
 
-
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import Controller.Avancer;
 import Controller.Controls;
-//import Controler.Avancer;
-//import Controler.Controls;
-//import Controler.Controls;
 import Modele.Etat;
 import Modele.Obstacles;
 import Modele.Road;

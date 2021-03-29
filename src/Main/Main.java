@@ -4,8 +4,6 @@ package Main;
 
 
 
-import java.awt.Button;
-
 import javax.swing.JFrame;
 
 import Controller.Avancer;
