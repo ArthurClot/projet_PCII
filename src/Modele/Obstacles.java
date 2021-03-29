@@ -21,8 +21,8 @@ public class Obstacles {
 	/** Constantes pour borner et aider a definir les abscisses et ordonnees des points de lignes generes aleatoirement */
 	private static final int BORNE_MIN =(100); //absc la + a gauche de la fenetre possible 
 	private static final int BORNE_MAX =(800);//absc la + a droite de la fenetre 
-	private static final int ESPACE_MIN = 200; //on veut que chaques ordonnees des points soit au minimum espaces de 350.
-
+	private static final int ESPACE_MIN = 200; //on veut que chaques ordonnees des points soit au minimum espaces de 200.
+	private static final int ESPACE_MAX = 300; //cest l'ESPACE_MIN + le max du nombre random (100)
 
 	//private static final int DEPARTGAUCHE = Affichage.getAbsVehicule()-150;//le depart du parcoursBas sera a gauche du vehicule 
 
@@ -56,7 +56,6 @@ public class Obstacles {
 
 	/**
 	 * Cette methode get est un peu speciale car elle permet de recuperer l'index du point le plus proche en dessous du vehicule 
-	 * (marche pour les points de ligneDroite et ligneGauche)
 	 * @return l'index du premier point dont l'abscisse est en dessous du vehicule
 	 */
 	public int getPointProches(){
@@ -107,10 +106,8 @@ public class Obstacles {
 	 */
 	public void MaJListO() {		
 		int ByeByeY =obstacleList.get(0).y;//on recup l'ordonnee du premier point de obstacleList
-		if(ByeByeY>=Affichage.getHauteurFenetre()) { //si l'ordonnee ByeByeY (du premier point de la list) est sorti de la fenetre (en bas),				
+		if(ByeByeY>=Affichage.getHauteurFenetre()+ESPACE_MAX) { //si l'ordonnee ByeByeY (du premier point de la list) est sorti de la fenetre (en bas),				
 			this.obstacleList.remove(0); // on supprime ce premier point pour obstacleList
-
-
 			ajouteFindeListeRandomP();//et on rajoute un point au bout de l' ObstacleList 		
 		}
 		mouvementHorizontalObstacles();			
@@ -124,6 +121,7 @@ public class Obstacles {
 	private void ajouteFindeListeRandomP() {
 		int y= ((obstacleList.get(obstacleList.size()-1).y)-rand.nextInt(100))-ESPACE_MIN;//abscisse du dernier point de obstacleList + une random val(+ESPACE_MIN)
 		//ligne suivante: l'ordonnee aleatoire du point est bornee en fonction de la taille de la fenetre .
+		rand.setSeed(5);
 		int x=rand.nextInt(BORNE_MAX)+BORNE_MIN; 
 		Point ob = new Point(x,y);
 
@@ -137,7 +135,10 @@ public class Obstacles {
 	 *  et une abscisse aleatoire bornee
 	 *  //pour le premier points de la liste, ont choisit nous meme les coordonnees pour laisser un temps de repit au joueur
 	 */
-	private void initList() {
+	public void initList() {
+		if(!obstacleList.isEmpty()) {
+			obstacleList.removeAll(obstacleList);
+		}
 		Point startObstacle = new Point(Affichage.getLargeurFenetre()/2,Affichage.getHorizon()-10); //on cree le premier point de ligneGauche (et ligneDroite) pour qu'il se situe a gauche (a droite) du vehicule
 		obstacleList.add(startObstacle); //on ajoute le startpoint a l'Arraylist obstacleList
 		int y=Affichage.getHorizon(); //le premier y Random va commencer apres cet ord

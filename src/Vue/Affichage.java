@@ -34,7 +34,7 @@ public class Affichage extends JPanel {
 	private Ressources ress;
 	private int direction =0 ; //indique la direction du vehicule (0->straight,1->gauche,2->droite) cette variable et modifiee par la classe Controls
 	private int score=0;//s'incremente a chaques fois qu'une paire de points dépassent l'ordonnée du vehicule
-
+	private static boolean flagDeDebut=false;
 	/* Constantes */
 
 	
@@ -48,12 +48,12 @@ public class Affichage extends JPanel {
 	
 	/** dimensions de la fenetre */
 	private static final int LARG_FENETRE = 1000;
-	private static final int HAUT_FENETRE = 800;
+	private static final int HAUT_FENETRE = 600;
 
 	
 	/**coordonnÃ©es de la voiture*/
 	private static final int ABS_VEHICULE = LARG_FENETRE/2; //l abcsisse initiale de la voiture. C'est etat.getPositionVehicule() que l'on utilisera en pratique.
-	private static final int ORD_VEHICULE = (HAUT_FENETRE-(HAUT_VEHICULE*2))-200; //la hauteur (ordonnnee) initiale de la voiture. 
+	private static final int ORD_VEHICULE = (HAUT_FENETRE-(HAUT_VEHICULE*2))-100; //la hauteur (ordonnnee) initiale de la voiture. 
 	
 	private static final int HORIZON = (HAUT_FENETRE/2)-(HAUT_FENETRE/3); // donne l'ordonnee ou se positionne l'horizon
 	
@@ -102,6 +102,14 @@ public class Affichage extends JPanel {
 
 	public void setDirection(int x) {
 		 direction=x;
+	}
+	
+	public  boolean getFlagDeDebut() {
+		return flagDeDebut;
+	}
+	
+	public  void setFlagDeDebut(boolean bool) {
+		flagDeDebut=bool;
 	}
 	/**************METHODES DE DESSIN *******************/
 		
@@ -162,7 +170,12 @@ public class Affichage extends JPanel {
 			}			
 			// faire grossir les images qui se rapporchent (de maniere simpliste)
 			if(pG1.y>=HORIZON) { 
-				int tailleBouee=larg_bouee+((pG1.y*pG1.y)/5000);//!\peut etre trouver un calcul d'incrementation de la taille plus "logique"		
+				int tailleBouee=larg_bouee+((pG1.y*pG1.y)/5000);
+				//le bout de code en commentaire permet de connaitre la taille de la bouee lors de son passage au niveau du vehicule
+				 /* if(pG1.y==ORD_VEHICULE)
+					System.out.println("taille bouee quand juste au dessus vehicule "+tailleBouee);
+				if(pG1.y==(ORD_VEHICULE+HAUT_VEHICULE))
+					System.out.println("taillebouée quand finir de depasser vehicule"+tailleBouee);*/
 				g.drawImage(ress.getImage(1),(pG1.x-tailleBouee/2),(pG1.y-tailleBouee/2), tailleBouee,  tailleBouee, this);
 				g.drawImage(ress.getImage(1),(pD1.x-tailleBouee/2),(pD1.y-tailleBouee/2), tailleBouee, tailleBouee, this);	
 			}				
@@ -178,13 +191,13 @@ public class Affichage extends JPanel {
 	 */
 	private void dessineObstacles(Graphics g) {
 		
-		for(int i=0;i<this.obstacles.getObstacleList().size()-1;i++) {
+		for(int i=1;i<this.obstacles.getObstacleList().size()-1;i++) { //on n'affiche pas l'obstacle  en position 0 du tableau (pour aider la hitbox dans Etat)
 			
 			Point pObs=this.obstacles.getObstacleList().get(i);
 			
 			// dessiner et faire grossir les images(obstacles) qui se rapporchent (de maniere simpliste)
 			if(pObs.y>=HORIZON) { 
-				int tailleObst=larg_bouee+((pObs.y*pObs.y)/5000);//!\peut etre trouver un calcul d'incrementation de la taille plus "logique"		
+				int tailleObst=larg_bouee+((pObs.y*pObs.y)/5000);// fait grossir limage en fonction de son ordonnee
 				g.drawImage(ress.getImage(5),(pObs.x-tailleObst/2),(pObs.y-tailleObst/2), tailleObst,  tailleObst, this);
 			}				
 			
@@ -205,17 +218,45 @@ public class Affichage extends JPanel {
 		}
 		g.setColor(Color.RED);//choix de la couleur des lettres et chiffres du score
 		g.setFont(new Font( "Cambria" ,Font.BOLD,30));// choix de la police et de la taille des lettres et chiffres du score
-		g.drawString("Score :"+score, LARG_FENETRE-200, HAUT_FENETRE/20);//on place et dessine un score qui s'incremente a chaque depassement de points
+		g.drawString("Score : "+score, 100, HAUT_FENETRE/12);//on place et dessine un score qui s'incremente a chaque depassement de points
 	}
+	
+	private void dessineScoreDeFin(Graphics g) {
+		g.setColor(Color.black);//choix de la couleur des lettres et chiffres du score
+		g.setFont(new Font( "Cambria" ,Font.BOLD,20));// choix de la police et de la taille des lettres du score
+		g.drawString("Score Final : ",  (LARG_FENETRE/2)-30, 260);//on place et dessine le "titre" du score final dans le menu principal
+		g.setFont(new Font( "Serif" ,Font.BOLD,30));// choix de la police et de la taille des lettres et chiffres du score
+		g.drawString("     "+score, (LARG_FENETRE/2)-30, 260+30);//on place et dessine un score (le nombre) dans le menu principal
+	}
+	
+	
+	
 	/**
 	 * methode qui dessine/affiche un message de fin avec le score final et termine les thread par la meme occasion
 	 * @param g
 	 */
-	private void dessineFin(Graphics g) {		
-		//ligne suivante : affiche un message indiquant que la partie est finie est indique un score final en se basant sur la position (voir dessineScore())
-		JOptionPane.showMessageDialog(this, "Fin de partie !  Score : "+this.score);
+	private void MenuFin(Graphics g) {
+		removeKeyListener(fleches);//enleve le MouseListener cest a dire l'action de saut produite par un clique
+		g.clearRect(0, 0 ,LARG_FENETRE,HAUT_FENETRE);
+		g.drawImage(ress.getImage(6), 0, 0,LARG_FENETRE, HAUT_FENETRE,this);
+		dessineScoreDeFin(g);
+		
+		g.setFont(new Font( "Cambria" ,Font.ITALIC,32));// choix de la police et de la taille des lettres du score
+		g.drawString("------------------>  press SPACE to play  <------------------",  (LARG_FENETRE/2)-305, HAUT_FENETRE-100);//on place et dessine le "titre" du score final dans le menu principal
+		
 	}
-	
+	/**
+	 * methode utilisee par le controler pour (re)demarrer la partie.
+	 */
+	public void DebutDePartie() {
+		this.score=0;
+		addKeyListener(fleches);
+		etat.setPositionVehicule(ABS_VEHICULE);
+		etat.setDeplacement(Etat.getDeplacementMax());
+		road.initLignes();
+		road.initZigzagTab();
+		obstacles.initList();
+	}
 	
 	/**
 	 * Override de la methode paint de l'interface de JComponent qui:
@@ -225,17 +266,16 @@ public class Affichage extends JPanel {
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g); //permet de raffraichir la fenetre en appelant repaint
-		
-		 if (Avancer.getFlagDeFin()) {//si la partie est finie
-			removeKeyListener(fleches);//enleve le MouseListener cest a dire l'action de saut produite par un clique
-			dessineFin(g);	
-		}		
-		
+				
 		dessineRoad(g);
 		dessineObstacles(g);
 		dessineVehicule(g,this.direction);
 		g.drawImage(ress.getImage(0), 0, 0, LARG_FENETRE, HORIZON, this);// image "sky background" d'apres  l'horizon
 		dessineScore(g);
+		
+		 if (Avancer.getFlagDeFin()) {//si la partie est finie			
+				MenuFin(g);	
+			}	
 	}
 
 }

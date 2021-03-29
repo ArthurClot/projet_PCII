@@ -26,10 +26,14 @@ public class Controls implements KeyListener {
 	public void keyMove(KeyEvent e) {
 		affichage.setDirection(0); //code pour STRAIGHT (par defaut)
 		switch (e.getKeyCode()) {
-		/*case KeyEvent.VK_UP:
-			etat.move(Direction.up); //aller en haut 
+		case KeyEvent.VK_SPACE:
+			affichage.setFlagDeDebut(true);
+			if(affichage.getFlagDeDebut()) {
+				affichage.DebutDePartie(); //redemmarer la partie
+				affichage.revalidate();	
+			}
 			break;
-		case KeyEvent.VK_DOWN:
+		/*case KeyEvent.VK_DOWN:
 			etat.move(Direction.down);//aller en bas
 			break;*/
 		case KeyEvent.VK_LEFT:

@@ -14,9 +14,9 @@ public class Avancer implements Runnable {
 	private static final int TIMEMIN=6; //c'est la valeur minimale du temps que l'on veut entre chaque mise a jour du thread de défilment de la route (décide la vitesse).
 	private static final int TIMEMAX=60;//c'est la valeur maximale du temps que l'on peut rajouter entre chaque mise a jour du thread de défilment de la route (décide la vitesse).
 
-	private  double time=30; //c'est le temps que l'on veut entre chaque mise a jour de la fenetre quand le parcours avance que l'on initialise au TIMEMAX-1);
+	private  double time; //c'est le temps que l'on veut entre chaque mise a jour de la fenetre quand le parcours avance que l'on initialise au TIMEMAX-1);
 	
-	
+	private boolean flagObstacle = false; //condition de ralentissement du a l'obstacle
 	private static boolean flagDeFin=false; //condition d'activation du Thread
 
 	/** CONSTRUCTEUR */
@@ -48,18 +48,31 @@ public class Avancer implements Runnable {
 		flagDeFin=true;
 	}
 
-
+	public void setFlagDeDebut() {
+		flagDeFin=false;
+	}
 
 	/**modifie la vitesse de defilement en fonction d'un coefficient */
 	private void variationSpeed() {
 				
-		//System.out.println("deplacement = "+etat.getDeplacement());
-
+		if(etat.testRalentissementObstacles()) {
+						
+			if(!flagObstacle) {
+				flagObstacle=true;			
+				if(this.time+20<TIMEMAX)
+					this.time+=25; //le 25 est arbitraire apres des tests.
+				else
+					flagDeFin=true;	
+			}
+		}
+		else {
+			flagObstacle = false;		
+		}
 		
-		if (etat.testRalentissement()==false) { //on va plus vite
+		if (etat.testRalentissementRoad()==false) { //on va plus vite
 			
 			if(this.time>TIMEMIN)
-			this.time-=(this.time/TIMEMAX)/8; //le "/8" cest pour temporiser l'acceleration)
+			this.time-=((this.time/6)/TIMEMAX); //le "/6" cest pour temporiser l'acceleration)
 		
 		}
 			
@@ -83,12 +96,14 @@ public class Avancer implements Runnable {
 	 */
 	@Override
 	public void run() {
-
+		
+		this.time=TIMEMAX/2;//on initialise le temps entre chaques thread a la moitiée du temps max entre chaques thread.
 
 
 		while(flagDeFin==false) {
-			if(etat.setFin())
+			if(etat.setFin()) {
 				flagDeFin=true;
+			}
 			variationSpeed();
 			road.setPosition() ;    //la position referente du parcours augmente et ont modifie du coup l'ordonnee des points des lignes.
 			road.MaJLignes();       //on regarde si il faut supprimer des points et en creer dans les arraylist Lignes (si oui on le fait)
@@ -100,6 +115,21 @@ public class Avancer implements Runnable {
 			try { Thread.sleep((int)this.time); } //on utilise Thread.sleep pour qu'il se passe un temps entre chaque Road.setPosition().
 			catch (Exception e) { e.printStackTrace(); }
 		}
+		
+		this.time=1000; // rien ne sert de verifier toutes les milisecondes , on verifie donc toute les secondes.
+		
+		while(flagDeFin==true) {
+			
+			if(affichage.getFlagDeDebut()) {
+				flagDeFin=false;
+				this.time=TIMEMAX/2;
+				affichage.setFlagDeDebut(false);
+				run();
+			}
+			try { Thread.sleep((int)this.time); } 
+			catch (Exception e) { e.printStackTrace(); }
+		}
+	
 	}
 
 

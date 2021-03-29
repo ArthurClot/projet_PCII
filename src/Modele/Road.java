@@ -122,7 +122,7 @@ public class Road {
 	 */
 	public void MaJLignes() {		
 		int ByeByeY =ligneGauche.get(1).y;//on recup l'ordonnee du deuxieme point de ligneGauche (c'est la meme ordonnee que pour le point de ligneDroite)
-		if(ByeByeY>=Affichage.getHauteurFenetre()) { //si l'ordonnee ByeByeY (du deuxieme point de la ligne) est sorti de la fenetre (en bas),				
+		if(ByeByeY>=Affichage.getHauteurFenetre()) { //si l'ordonnee ByeByeY (du deuxieme point de la ligne) est sorti de la fenetre (en bas) depuis quelque temps (100),				
 			this.ligneGauche.remove(0); // on supprime (le premier point) celui en dessous de ByeByeY pour ligneGauche et ligneDroite
 			this.ligneDroite.remove(0); 
 			this.abscissesRoute.remove(0);
@@ -150,7 +150,10 @@ public class Road {
 	/**initZigzagTab permet de creer les virages de la route en retournant un tableau rempli de valeur aleatoires 
 	 *  etant l'abscisse entre deux points gauche et droite de la route.
 	 */
-	private ArrayList<Integer> initZigzagTab() {
+	public ArrayList<Integer> initZigzagTab() {
+		if(!abscissesRoute.isEmpty()) {
+			abscissesRoute.removeAll(abscissesRoute);
+		}
 		for(int i=0; i < ligneGauche.size(); i++){
 		    abscissesRoute.add(rand.nextInt(BORNE_MAX)+BORNE_MIN) ;
 		}
@@ -161,7 +164,11 @@ public class Road {
 	 *  et une abscisse qui commence au centre de la fenetre
 	 *  //pour les 2 premiers points de chaques lignes, ont choisit nous meme les coordonnees pour donner un effet d'entree de circuit.
 	 */
-	private void initLignes() {
+	public void initLignes() {
+		if(!ligneGauche.isEmpty()) {
+			ligneGauche.removeAll(ligneGauche);
+			ligneDroite.removeAll(ligneDroite);
+		}
 		Point startG = new Point(DEPARTGAUCHE,Affichage.getOrdVehicule()+10); //on cree le premier point de ligneGauche (et ligneDroite) pour qu'il se situe a gauche (a droite) du vehicule
 		Point startD = new Point(DEPARTDROITE,Affichage.getOrdVehicule()+10);
 		ligneGauche.add(startG); //on ajoute les points aux Arraylist ligneBas et ligneHaut
