@@ -17,7 +17,11 @@ public class Etat {
 	private static final int DEPLACEMENT_MAX=20;	// variable definisant la taille d'un deplacement de la voiture
 	private  int deplacement= DEPLACEMENT_MAX;	// variable definisant la taille d'un deplacement de la voiture
 	
-
+	private final int  TEMPS_INITIAL=25;	
+	private  int minuteur;
+	private int tempsTotal=0;
+	private int score=-1;//s'incremente a chaques fois qu'une paire de points dépassent l'ordonnée du vehicule (commence a -1 pour ne pas apparaitre au lancement du jeu (la premiere fois))
+	
 	/** CONSTRUCTEUR */
 	public Etat(Road roa, Obstacles obs) {
 		this.road =roa;
@@ -38,7 +42,25 @@ public class Etat {
 		this.positionVehicule=x;
 	}
 
-
+	public void setScoreAZero() {
+		this.score=0;
+	}
+	
+	public int getScore() {
+		return this.score;
+	}
+	
+	public int getTempsTotal() {
+		return this.tempsTotal;
+	}
+	
+	public int getMinuteur() {
+		return this.minuteur;
+	}
+	
+	public int getTemps_initial() {
+		return TEMPS_INITIAL;
+	}
 	public static int getDeplacementMax() {
 		return DEPLACEMENT_MAX;
 	}
@@ -46,6 +68,7 @@ public class Etat {
 	public int getDeplacement() {
 		return deplacement;		
 }
+	
 	/**
 	 * on ajoute x a la valeur de this.deplacement
 	 */
@@ -59,17 +82,45 @@ public class Etat {
 	
 	/**************AUTRE METHODES *******************/
 	
+	public void initMinuteur() {
+		this.minuteur=TEMPS_INITIAL;
+	}
+	
+	public void decrementeMinuteur() {
+		minuteur--;
+		tempsTotal++; //on garde les secondes qui secoulent dans une variable.
+	}
+	
+	public boolean finMinuteur() {
+		if(minuteur==0)
+			return true;
+		else
+			return false;
+	}
+	
 	/**
 	 * setFin() nous indique si la variable deplacement est a 0 (ou inferieur) car alors la voiture ne se depalce plus et c'est la fin de la partie
 	 * cette methode est appellee par la classe (thread) Avancer
 	 * @return booleen
 	 */
 	public boolean setFin() {
-		if (deplacement<=0) {
+		if (deplacement<=0 || minuteur==0) {
 			return true;
 		}
 		return false;
 	}
+	public void incrementScoreEtMinuteur() {
+		//on icremente le score quand le vehicule "depasse une paire de points" et le minuteur tout les 5 points
+		for(int i = 0; i<this.road.getLigneGauche().size();i++) {
+			if(road.getLigneGauche().get(i).y==Affichage.getOrdVehicule() ) {//la paire de point depasse le vehicule
+					score++;
+			if(score%5==0)
+					minuteur=minuteur+(TEMPS_INITIAL/2)-(score/10);			
+			}
+		}
+		
+	}
+	
 	/**
 	 * la methode testRalentissement() recupere 2 points, un au dessous  et un au dessus de l'abscisse du vehicule (positionvoiture).
 	 * ensuite elle calcule le "coefficient de pente entre les 2 points grace a leurs Abscisses
@@ -117,8 +168,8 @@ public class Etat {
 			int tailleHitboxX=4;
 			int tailleHitboxY=3;
 			//on sait qu'il aura tjrs 1 point et 1 seul en dessous de celui succeptible de toucher le vehicule. d'ou le get(1) ci dessous (get(0+1) )
-			Point boueeDroite =road.getLigneDroite().get(1); 
-			Point boueeGauche =road.getLigneGauche().get(1); 		
+			Point boueeDroite =road.getLigneDroite().get(road.getPointProches()); 
+			Point boueeGauche =road.getLigneGauche().get(road.getPointProches()); 		
 			//le premier if marche pour boueeGauche et boueedroite car elles ont la meme ordonnee.
 			if(((boueeGauche.y+tailleHitboxY)>=Affichage.getOrdVehicule() ) && ((boueeGauche.y+tailleHitboxY)<=(Affichage.getOrdVehicule()+Affichage.getHautVehicule()))) {
 				if(((boueeGauche.x+tailleHitboxX) >= positionVehicule  && (boueeGauche.x+tailleHitboxX) <= (positionVehicule+Affichage.getLargVehicule()))

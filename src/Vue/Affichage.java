@@ -28,7 +28,7 @@ public class Affichage extends JPanel {
 	private Controls fleches; 
 	private Ressources ress;
 	private int direction =0 ; //indique la direction du vehicule (0->straight,1->gauche,2->droite) cette variable et modifiee par la classe Controls
-	private int score=-1;//s'incremente a chaques fois qu'une paire de points dépassent l'ordonnée du vehicule (commence a -1 pour ne pas apparaitre au lancement du jeu (la premiere fois))
+	
 	private static boolean flagDeDebut=false;
 	/* Constantes */
 
@@ -104,6 +104,8 @@ public class Affichage extends JPanel {
 	public  void setFlagDeDebut(boolean bool) {
 		flagDeDebut=bool;
 	}
+	
+	
 	/**************METHODES DE DESSIN *******************/
 
 	/**
@@ -197,27 +199,7 @@ public class Affichage extends JPanel {
 			}
 		}
 	}
-	/**private void dessineRoad(Graphics g) {
-
-		for(int i=0;i<this.road.getLigneDroite().size()-1;i++) {//entre chaques paire de points ( d'arraylist ligne on remplie les tableaux)
-			
-			Point pG1=this.road.getLigneGauche().get(i);   //les points pour les lignes (de-commenter aussi l'import pour les Points)
-			Point pG2=this.road.getLigneGauche().get(i+1);
-			//System.out.println(pG1.y+"  et  "+pG2.y);
-			Point pD1=this.road.getLigneDroite().get(i);
-			Point pD2=this.road.getLigneDroite().get(i+1);			
-			g.setColor(Color.yellow);	//on choisit la couleur de la route 
-
-			if(pG1.y>HORIZON) { 
-				int tailleBouee=1+((pG1.y*pG1.y)/5000);
-				// faire grossir les images qui se rapporchent (de maniere simpliste)
-				g.drawImage(ress.getImage(1),(pG1.x-tailleBouee/2),(pG1.y-tailleBouee/2), tailleBouee,  tailleBouee, this);
-				g.drawImage(ress.getImage(1),(pD1.x-tailleBouee/2),(pD1.y-tailleBouee/2), tailleBouee, tailleBouee, this);	
-
-		
-			}
-		}
-	}*/
+	
 	
 
 	/**cette methode dessine les obstacles  :
@@ -227,7 +209,7 @@ public class Affichage extends JPanel {
 	 */
 	private void dessineObstacles(Graphics g) {
 
-		for(int i=0;i<this.obstacles.getObstacleList().size();i++) { //on n'affiche pas l'obstacle  en position 0 du tableau (pour aider la hitbox dans Etat)
+		for(int i=1;i<this.obstacles.getObstacleList().size();i++) { //on n'affiche pas l'obstacle  en position 0 du tableau (pour aider la hitbox dans Etat)
 
 			Point pObs=this.obstacles.getObstacleList().get(i);
 
@@ -243,30 +225,28 @@ public class Affichage extends JPanel {
 		}
 
 	}
+	
+	
+	
+	
 	/**
 	 * methode qui dessine/affiche le score au centre en haut de la fenetre
 	 * @param g
 	 */
-	private void dessineScore(Graphics g) {
-		//on icremente le score quand le vehicule "depasse une paire de points en passant entre les deux
-		for(int i = 0; i<this.road.getLigneGauche().size();i++) {
-			if(this.road.getLigneGauche().get(i).y==ORD_VEHICULE //la paire de point depasse le vehicule
-				 ) { // vehicule gauche du point droit
-				score++;
-			System.out.println("score---------------------------------------------------------------------------------");
-			}
-		}
+	private void dessineMinuteur(Graphics g) {
+		
 		g.setColor(Color.RED);//choix de la couleur des lettres et chiffres du score
 		g.setFont(new Font( "Cambria" ,Font.BOLD,30));// choix de la police et de la taille des lettres et chiffres du score
-		g.drawString("Score : "+score, 100, HAUT_FENETRE/12);//on place et dessine un score qui s'incremente a chaque depassement de points
+		g.drawString("Time : "+etat.getMinuteur(), 100, HAUT_FENETRE/12);//on place et dessine un score qui s'incremente a chaque depassement de points
 	}
 
-	private void dessineScoreDeFin(Graphics g) {
+	private void dessineTempsFinal(Graphics g) {
 		g.setColor(Color.black);//choix de la couleur des lettres et chiffres du score
 		g.setFont(new Font( "Cambria" ,Font.BOLD,20));// choix de la police et de la taille des lettres du score
 		g.drawImage(ress.getImage(7),(LARG_FENETRE/2)-72, 240,200,35, this);//on place le "titre" du score final dans le menu principal
 		g.setFont(new Font( "Serif" ,Font.BOLD,30));// choix de la police et de la taille des lettres et chiffres du score
-		g.drawString("     "+score, (LARG_FENETRE/2)-30, 260+30);//on place et dessine un score (le nombre) dans le menu principal
+		//int tempsfinal =((etat.getTemps_initial()-etat.getMinuteur())+(etat.getTemps_initial()*(etat.getScore()/5)));
+		g.drawString("     "+etat.getTempsTotal(), (LARG_FENETRE/2)-30, 260+30);//on place et dessine un score (le nombre) dans le menu principal
 	}
 
 
@@ -279,8 +259,8 @@ public class Affichage extends JPanel {
 		removeKeyListener(fleches);//enleve le MouseListener cest a dire l'action de saut produite par un clique
 		g.clearRect(0, 0 ,LARG_FENETRE,HAUT_FENETRE);
 		g.drawImage(ress.getImage(6), 0, 0,LARG_FENETRE, HAUT_FENETRE,this);
-		if(score>-1)//le score n'est egal a -1 qu'au premier lancement du jeu.
-			dessineScoreDeFin(g);
+		if(etat.getScore()>-1)//le score n'est egal a -1 qu'au premier lancement du jeu.
+			dessineTempsFinal(g);
 
 		g.setFont(new Font( "Cambria" ,Font.ITALIC,32));// choix de la police et de la taille des lettres du score
 		g.drawString("------------------>  press ENTER to play  <------------------",  (LARG_FENETRE/2)-305, HAUT_FENETRE-100);//on place et dessine le "titre" du score final dans le menu principal
@@ -290,8 +270,10 @@ public class Affichage extends JPanel {
 	 * methode utilisee par le controler pour (re)demarrer la partie.
 	 */
 	public void DebutDePartie() {
-		this.score=0;
+		
 		addKeyListener(fleches);
+		etat.setScoreAZero();
+		etat.initMinuteur();
 		etat.setPositionVehicule(ABS_VEHICULE);
 		etat.setDeplacement(Etat.getDeplacementMax());
 		road.initLignes();
@@ -315,7 +297,7 @@ public class Affichage extends JPanel {
 			dessineObstacles(g);
 			dessineVehicule(g,this.direction);
 			g.drawImage(ress.getImage(0), 0, 0, LARG_FENETRE, HORIZON, this);// image "sky background" d'apres  l'horizon
-			dessineScore(g);
+			dessineMinuteur(g);
 		}
 		
 	}

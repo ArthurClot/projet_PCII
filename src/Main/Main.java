@@ -5,7 +5,7 @@ import javax.swing.JFrame;
 
 import Controller.Avancer;
 import Controller.Controls;
-
+import Controller.Timer;
 //import Controller.Mouvement;
 import Modele.Etat;
 import Modele.Obstacles;
@@ -40,8 +40,11 @@ public class Main {
 		
 		
 		/** creation des Threads*/
-		new Thread(new Avancer(road,affichage,etat,obstacles)).start();	// déroulement de la route
+		Avancer avancer=new Avancer(road,affichage,etat,obstacles);
+		Timer timer=new Timer(etat);
 		
+		new Thread(avancer).start();	// déroulement de la route
+		new Thread(timer).start();
 	  }		
 
 }

@@ -11,10 +11,10 @@ public class Avancer implements Runnable {
 	private Affichage affichage;
 	private Etat etat;
 	private Obstacles obstacles;
-	private static final int TIMEMIN=6; //c'est la valeur minimale du temps que l'on veut entre chaque mise a jour du thread de défilment de la route (décide la vitesse).
+	private static final int TIMEMIN=4; //c'est la valeur minimale du temps que l'on veut entre chaque mise a jour du thread de défilment de la route (décide la vitesse).
 	private static final int TIMEMAX=60;//c'est la valeur maximale du temps que l'on peut rajouter entre chaque mise a jour du thread de défilment de la route (décide la vitesse).
 
-	private int ralentissementObstacle=20; //represente le cas ou l'on touche un obstacle (la valeur du rallentissement)
+	private int ralentissementObstacle=15; //represente le cas ou l'on touche un obstacle (la valeur du rallentissement)
 	private  double time; //c'est le temps que l'on veut entre chaque mise a jour de la fenetre quand le parcours avance que l'on initialise au TIMEMAX-1);
 
 	private boolean flagObstacle = false; //condition de ralentissement du a l'obstacle
@@ -76,7 +76,7 @@ public class Avancer implements Runnable {
 
 		else {//on va plus lentement :
 			if(this.time<TIMEMAX)
-				this.time+=(this.time/TIMEMAX)/4;//le "/4" cest pour temporiser un peu la decceleration)
+				this.time+=(this.time/TIMEMAX)/3;//le "/3" cest pour temporiser un peu la decceleration)
 		}
 		etat.setDeplacement((TIMEMAX/2)-(this.time/2));	
 		//faire varier la vitesse de deplacement horizontale des obstacles (requins) et le nombre de changements de sens
@@ -98,8 +98,8 @@ public class Avancer implements Runnable {
 
 
 		while(flagDeFin==false) {
-			if(etat.setFin()) {
-				flagDeFin=true;
+			if(etat.setFin() ) {
+				flagDeFin=true;			
 			}
 			
 			road.setPosition() ;    //la position referente du parcours augmente et ont modifie du coup l'ordonnee des points des lignes.
@@ -107,7 +107,7 @@ public class Avancer implements Runnable {
 			road.MaJLignes();       //on regarde si il faut supprimer des points et en creer dans les arraylist Lignes (si oui on le fait)
 			obstacles.MaJListO();
 			variationSpeed();
-			
+			etat.incrementScoreEtMinuteur();
 			affichage.revalidate();
 			affichage.repaint();        //on reactualise l'image depuis l'instance affichage
 			try { Thread.sleep((int)this.time); } //on utilise Thread.sleep pour qu'il se passe un temps entre chaque Road.setPosition().
@@ -117,7 +117,6 @@ public class Avancer implements Runnable {
 		this.time=500; // rien ne sert de verifier toutes les milisecondes , on verifie donc toute secondes.
 
 		while(flagDeFin==true) {
-
 			if(affichage.getFlagDeDebut()) {
 				flagDeFin=false;
 				this.time=TIMEMAX/2;
