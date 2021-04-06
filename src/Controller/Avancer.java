@@ -114,7 +114,7 @@ public class Avancer implements Runnable {
 			catch (Exception e) { e.printStackTrace(); }
 		}
 
-		this.time=500; // rien ne sert de verifier toutes les milisecondes , on verifie donc toute secondes.
+		this.time=250; // rien ne sert de verifier toutes les milisecondes , on verifie donc toute secondes.
 
 		while(flagDeFin==true) {
 			if(affichage.getFlagDeDebut()) {
@@ -123,6 +123,8 @@ public class Avancer implements Runnable {
 				affichage.setFlagDeDebut(false);
 				run();
 			}
+			affichage.revalidate();
+			affichage.repaint(); 
 			try { Thread.sleep((int)this.time); } 
 			catch (Exception e) { e.printStackTrace(); }
 		}

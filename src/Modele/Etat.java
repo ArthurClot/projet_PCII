@@ -17,11 +17,12 @@ public class Etat {
 	private static final int DEPLACEMENT_MAX=20;	// variable definisant la taille d'un deplacement de la voiture
 	private  int deplacement= DEPLACEMENT_MAX;	// variable definisant la taille d'un deplacement de la voiture
 	
-	private final int  TEMPS_INITIAL=25;	
+	private final int  TEMPS_INITIAL=30;	
 	private  int minuteur;
 	private int tempsTotal=0;
 	private int score=-1;//s'incremente a chaques fois qu'une paire de points dépassent l'ordonnée du vehicule (commence a -1 pour ne pas apparaitre au lancement du jeu (la premiere fois))
 	
+	private int idBoueeSpeciale=0;
 	/** CONSTRUCTEUR */
 	public Etat(Road roa, Obstacles obs) {
 		this.road =roa;
@@ -58,8 +59,8 @@ public class Etat {
 		return this.minuteur;
 	}
 	
-	public int getTemps_initial() {
-		return TEMPS_INITIAL;
+	public int getIdBoueeSpeciale() {
+		return idBoueeSpeciale;
 	}
 	public static int getDeplacementMax() {
 		return DEPLACEMENT_MAX;
@@ -114,8 +115,10 @@ public class Etat {
 		for(int i = 0; i<this.road.getLigneGauche().size();i++) {
 			if(road.getLigneGauche().get(i).y==Affichage.getOrdVehicule() ) {//la paire de point depasse le vehicule
 					score++;
-			if(score%5==0)
-					minuteur=minuteur+(TEMPS_INITIAL/2)-(score/10);			
+			if(score%5==0) {
+					minuteur=minuteur+(TEMPS_INITIAL/2)-(score/10);	
+					idBoueeSpeciale=i;
+			}
 			}
 		}
 		

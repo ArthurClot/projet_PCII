@@ -28,7 +28,7 @@ public class Controls implements KeyListener {
 	public void keyMove(KeyEvent e) {
 		affichage.setDirection(0); //code pour STRAIGHT (par defaut)
 		switch (e.getKeyCode()) {
-		case KeyEvent.VK_ENTER:
+		case KeyEvent.VK_SPACE:
 			affichage.setFlagDeDebut(true);
 			if(Avancer.getFlagDeFin()) {
 				affichage.DebutDePartie(); //redemmarer la partie
