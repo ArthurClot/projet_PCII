@@ -1,13 +1,11 @@
 package Main;
 
 
-
-
-
 import javax.swing.JFrame;
 
 import Controller.Avancer;
 import Controller.Controls;
+
 //import Controller.Mouvement;
 import Modele.Etat;
 import Modele.Obstacles;
@@ -43,7 +41,6 @@ public class Main {
 		
 		/** creation des Threads*/
 		new Thread(new Avancer(road,affichage,etat,obstacles)).start();	// déroulement de la route
-		//new Thread(new Mouvement(controls,affichage,etat)).start();	// déplacements du vehicule
 		
 	  }		
 

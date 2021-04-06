@@ -23,13 +23,13 @@ public class Road {
 	private static final int BORNE_MIN =(50); //absc la + a gauche de la fenetre possible 
 	private static final int BORNE_MAX =(850);//absc la + a droite de la fenetre 
 	private static final int ESPACE_MIN = 350; //on veut que chaques ordonnees des points soit au minimum espaces de 350.
-	
+	private static final int ESPACE_MAX= 450; // l'espace min plus le max du random ,cest a dire 100
 	
 	private static final int DEPARTGAUCHE = Affichage.getAbsVehicule()-150;//le depart du parcoursBas sera a gauche du vehicule 
 	private static final int DEPARTDROITE = Affichage.getAbsVehicule()+150;//le depart du parcoursHaut sera a droite du vehicule
 	
 	private static final Random rand = new Random(); //variable aleatoire pour pouvoir utiliser la bibliotheque java.util.Random.
-	private  static final float ECARTEMENT=  (float) 0.5; //donne la taille de pixel dont s'ecarte les deux cotes de la route tout en se rapprochent du bas  	/**CONSTRUCTEUR*/
+	private  static final float ECARTEMENT=  (float) 0.6; //donne la taille de pixel dont s'ecarte les deux cotes de la route tout en se rapprochent du bas  	/**CONSTRUCTEUR*/
 	
 	
 	/**CONSTRUCTEUR*/
@@ -120,15 +120,16 @@ public class Road {
 	 * de plus elle modifie l'abscisse des points des lignes en appelant perspectiveEtViragesLignes()
 	 * cette methode est  appellee a chaque utilisation du thread de la Classe Avancer
 	 */
-	public void MaJLignes() {		
+	public void MaJLignes() {
+		perspectiveEtViragesLignes();	
 		int ByeByeY =ligneGauche.get(1).y;//on recup l'ordonnee du deuxieme point de ligneGauche (c'est la meme ordonnee que pour le point de ligneDroite)
-		if(ByeByeY>=Affichage.getHauteurFenetre()) { //si l'ordonnee ByeByeY (du deuxieme point de la ligne) est sorti de la fenetre (en bas) depuis quelque temps (100),				
+		if(ByeByeY>=Affichage.getHauteurFenetre()+ESPACE_MAX) { //si l'ordonnee ByeByeY (du deuxieme point de la ligne) est sorti de la fenetre (en bas) depuis quelque temps (100),				
 			this.ligneGauche.remove(0); // on supprime (le premier point) celui en dessous de ByeByeY pour ligneGauche et ligneDroite
 			this.ligneDroite.remove(0); 
 			this.abscissesRoute.remove(0);
 			ajouteFindeListesRandomP();//et on rajoute un point au bout des 2 listes			
 		}
-		perspectiveEtViragesLignes();			
+				
 				
 	}
 
@@ -174,7 +175,7 @@ public class Road {
 		ligneGauche.add(startG); //on ajoute les points aux Arraylist ligneBas et ligneHaut
 		ligneDroite.add(startD);		
 		int y=Affichage.getHauteurFenetre()-ESPACE_MIN; //le premier y Random va commencer apres cet ord
-		while(y>(-Affichage.getHauteurFenetre())) { //on veut creer des point jusqu'au 5/4 de la hauteur de la fenetre
+		while(y>(-Affichage.getHauteurFenetre()*2)) { //on veut creer des point jusqu'a deux fois la  hauteur de la fenetre
 			y=(y-rand.nextInt(100))-ESPACE_MIN;//creation d'une ord random commun aux deux lignes avec un espace minimum entre deux ord
 			//ligne suivante: l'absc aleatoires de depart des points sont au centre de la fenetre.
 			int x=Affichage.getLargeurFenetre()/2; 

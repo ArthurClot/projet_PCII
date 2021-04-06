@@ -4,7 +4,6 @@ package Vue;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
 
 
@@ -21,10 +20,10 @@ public class Ressources {
 		images = new Image[dossier.listFiles().length];
 		for(int i=0;i<images.length;i++) {
 			try {
-				File fichier = new File("images/"+i+".png");
-				image = ImageIO.read(fichier);
+				
+				image =ImageIO.read(getClass().getClassLoader().getResource(i+".png"));			
 				images[i]=image;
-				System.out.println(fichier.toString()+"   lu");
+	
 			} catch (IOException e) {
 				System.out.println("l'image"+i+"n'a pas pu etre lue");
 			}

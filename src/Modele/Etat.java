@@ -81,8 +81,7 @@ public class Etat {
 	 */
 	public boolean testRalentissementRoad() {
 		
-		int indexP1= road.getPointProches();//on recupere l'index du premier point en dessous de la voiture
-		
+		int indexP1= road.getPointProches();//on recupere l'index du premier point en dessous de la voiture		
 		int indexP2= indexP1+1; //on recupere l'index du premier point au dessus de la voiture
 		
 		/**Pour Ligne Gauche*/		
@@ -99,16 +98,13 @@ public class Etat {
 		float pented = (float)((p2d.x) - (p1d.x) )/ ((float)(p2d.y) - (float)(p1d.y)); 
 		float pointxDeDroite =  (-pented*(p2d.y-Affichage.getOrdVehicule())+p2d.x)+Affichage.getLargVehicule();
 		
-		if(pointxDeGauche >= positionVehicule){ // si le point de la ligne de gauche touche ou depasse la gauche de la voiture	
-					
+		if(pointxDeGauche >= positionVehicule){ // si le point de la ligne de gauche touche ou depasse la gauche de la voiture					
 			return  true;
 		}
-		else if(pointxDeDroite <= positionVehicule+Affichage.getHautVehicule()){// si le point de la ligne de droite  touche ou depasse la droite de la voiture
-			
+		else if(pointxDeDroite <= positionVehicule+Affichage.getHautVehicule()){// si le point de la ligne de droite  touche ou depasse la droite de la voiture			
 			return true;
 		}
-		else {	
-			
+		else {				
 			return false;
 		}
 	}
@@ -118,29 +114,30 @@ public class Etat {
 		//on récup differents points (un carré) pour la hit box des obstacles
 		//
 		public boolean testRalentissementObstacles() {
-			int tailleHitbox=10;
+			int tailleHitboxX=4;
+			int tailleHitboxY=3;
 			//on sait qu'il aura tjrs 1 point et 1 seul en dessous de celui succeptible de toucher le vehicule. d'ou le get(1) ci dessous (get(0+1) )
 			Point boueeDroite =road.getLigneDroite().get(1); 
 			Point boueeGauche =road.getLigneGauche().get(1); 		
-			//le premier if marche pour boueeGauche et Bouee droite car elles ont la meme ordonnee.
-			if(((boueeGauche.y+tailleHitbox)>=Affichage.getOrdVehicule() ) && ((boueeGauche.y+tailleHitbox)<=(Affichage.getOrdVehicule()+Affichage.getHautVehicule()))) {
-				if(((boueeGauche.x+tailleHitbox) >= positionVehicule  && (boueeGauche.x+tailleHitbox) <= (positionVehicule+Affichage.getLargVehicule()))
+			//le premier if marche pour boueeGauche et boueedroite car elles ont la meme ordonnee.
+			if(((boueeGauche.y+tailleHitboxY)>=Affichage.getOrdVehicule() ) && ((boueeGauche.y+tailleHitboxY)<=(Affichage.getOrdVehicule()+Affichage.getHautVehicule()))) {
+				if(((boueeGauche.x+tailleHitboxX) >= positionVehicule  && (boueeGauche.x+tailleHitboxX) <= (positionVehicule+Affichage.getLargVehicule()))
 				   ||
-				   ((boueeGauche.x-tailleHitbox) >= positionVehicule && (boueeGauche.x-tailleHitbox) <= (positionVehicule+Affichage.getLargVehicule()))) {
-					    return true;
+				   ((boueeGauche.x-tailleHitboxX) >= positionVehicule && (boueeGauche.x-tailleHitboxX) <= (positionVehicule+Affichage.getLargVehicule()))) {
+					return true;
 				}
-				if(((boueeDroite.x+tailleHitbox) >= positionVehicule  && (boueeDroite.x+tailleHitbox) <= (positionVehicule+Affichage.getLargVehicule()))
+				if(((boueeDroite.x+tailleHitboxX) >= positionVehicule  && (boueeDroite.x+tailleHitboxX) <= (positionVehicule+Affichage.getLargVehicule()))
 				   ||
-				   ((boueeDroite.x-tailleHitbox) >= positionVehicule && (boueeDroite.x-tailleHitbox) <= (positionVehicule+Affichage.getLargVehicule()))) {
-						return true;
+				   ((boueeDroite.x-tailleHitboxX) >= positionVehicule && (boueeDroite.x-tailleHitboxX) <= (positionVehicule+Affichage.getLargVehicule()))) {
+					return true;
 			    }
 			}
 			//on sait qu'il aura tjrs 1 point et 1 seul en dessous de celui succeptible de toucher le vehicule. d'ou le get(1) ci dessous (get(0+1) )
 			Point obstacle = obstacles.getObstacleList().get(1);
-			if(((obstacle.y+tailleHitbox)>=Affichage.getOrdVehicule() ) && ((obstacle.y+tailleHitbox)<=(Affichage.getOrdVehicule()+Affichage.getHautVehicule()))) {
-				if(((obstacle.x+tailleHitbox) >= positionVehicule  && (obstacle.x+tailleHitbox) <= (positionVehicule+Affichage.getLargVehicule()))
+			if(((obstacle.y+tailleHitboxY)>=Affichage.getOrdVehicule() ) && ((obstacle.y+tailleHitboxY)<=(Affichage.getOrdVehicule()+Affichage.getHautVehicule()))) {
+				if(((obstacle.x+tailleHitboxX) >= positionVehicule  && (obstacle.x+tailleHitboxX) <= (positionVehicule+Affichage.getLargVehicule()))
 				   ||
-				   ((obstacle.x-tailleHitbox) >= positionVehicule && (obstacle.x-tailleHitbox) <= (positionVehicule+Affichage.getLargVehicule()))) {
+				   ((obstacle.x-tailleHitboxX) >= positionVehicule && (obstacle.x-tailleHitboxX) <= (positionVehicule+Affichage.getLargVehicule()))) {
 
 					return true;
 				}
@@ -159,10 +156,12 @@ public class Etat {
 			case down:				
 				break;*/
 			case right:
-				this.positionVehicule=this.positionVehicule+this.deplacement;
+				if(this.positionVehicule<(Affichage.getLargeurFenetre()-Affichage.getLargVehicule()-deplacement))
+					this.positionVehicule=this.positionVehicule+this.deplacement;
 				break;		
 			case left:
-				this.positionVehicule=this.positionVehicule-this.deplacement;
+				if(this.positionVehicule>=deplacement)
+					this.positionVehicule=this.positionVehicule-this.deplacement;
 				break;
 			default:
 				break;

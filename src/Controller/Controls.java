@@ -14,11 +14,13 @@ public class Controls implements KeyListener {
 
 	private Affichage affichage ;
 	private Etat etat;
+	//private Avancer avancer;
 	
 	//CONSTRUCTEUR:
 	public Controls(Affichage aff,Etat eta){
 		this.affichage=aff;
 		this.etat=eta;
+		//this.avancer=ava;
 	}
 
 	
@@ -26,9 +28,9 @@ public class Controls implements KeyListener {
 	public void keyMove(KeyEvent e) {
 		affichage.setDirection(0); //code pour STRAIGHT (par defaut)
 		switch (e.getKeyCode()) {
-		case KeyEvent.VK_SPACE:
+		case KeyEvent.VK_ENTER:
 			affichage.setFlagDeDebut(true);
-			if(affichage.getFlagDeDebut()) {
+			if(Avancer.getFlagDeFin()) {
 				affichage.DebutDePartie(); //redemmarer la partie
 				affichage.revalidate();	
 			}

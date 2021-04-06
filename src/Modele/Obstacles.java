@@ -11,23 +11,29 @@ public class Obstacles {
 
 
 
-	/** position et AVANCE sont les variables qui permettent de faire "avancer" la route*/
+	/** position et AVANCE sont les variables qui permettent de faire "avancer" les obstacles*/
 	private  int position =0; // position s'incremente tant que la partie continue
 	private final static int AVANCE = 1;//valeur d'incrementation de la position
+	
+	private int DELAYMAX=9;
+	private int DELAYMIN=3;
+	private int delayHorizonMove = 3; //donne tout les combien de pixels a la verticale on fait un déplacement horizontal
+	private int changeSens = 80; //donne tout les combien de pixels a la verticale on change le sens de déplacement horizontal
+	
+	/** Creation des Arraylist pour contenir les Points des obstacles ainsi qu'une ArrayList pour le sens de mouvement horizontal */
+	private  ArrayList<Point> obstacleList= new ArrayList<Point>();//la liste de points avec 1 point = 1 obstacle
+	private  ArrayList<Boolean> obstacleListBool= new ArrayList<Boolean>();//la liste de booleen avec 1 bool = 1 obstacle (sert a definir les mouvements horizontaux des obstacles)
 
-	/** Creation des Arraylist pour contenir les Points des Ligne Gauche et Droite ainsi qu'un tableau pour les abscisses*/
-	private  ArrayList<Point> obstacleList= new ArrayList<Point>();//la liste de points avec 1 pont = 1 obstacle
-
-	/** Constantes pour borner et aider a definir les abscisses et ordonnees des points de lignes generes aleatoirement */
+	/** Constantes pour borner et aider a definir les abscisses et ordonnees des points d'obstacles generes aleatoirement */
 	private static final int BORNE_MIN =(100); //absc la + a gauche de la fenetre possible 
 	private static final int BORNE_MAX =(800);//absc la + a droite de la fenetre 
-	private static final int ESPACE_MIN = 200; //on veut que chaques ordonnees des points soit au minimum espaces de 200.
-	private static final int ESPACE_MAX = 300; //cest l'ESPACE_MIN + le max du nombre random (100)
-
-	//private static final int DEPARTGAUCHE = Affichage.getAbsVehicule()-150;//le depart du parcoursBas sera a gauche du vehicule 
+	private static final int ESPACE_MIN = 300; //on veut que chaques ordonnees des points soit au minimum espaces de 200.
+	private static final int ESPACE_MAX = 400; //cest l'ESPACE_MIN + le max du nombre random (100)
+	
+	 
 
 	private static final Random rand = new Random(); //variable aleatoire pour pouvoir utiliser la bibliotheque java.util.Random.
-	private  static final float MOUVEMENT=  (float) 3; //donne la taille de pixel dont se déplace l'obstacle sur le cote
+	private  static final float MOUVEMENT=  (float) 6; //donne la taille de pixel dont se déplace l'obstacle sur le cote
 
 	/**CONSTRUCTEUR*/
 	public Obstacles(){
@@ -43,6 +49,11 @@ public class Obstacles {
 
 		return this.obstacleList;
 	}
+	
+	public ArrayList<Boolean> getObstacleListBool() {
+
+		return this.obstacleListBool;
+	}
 
 
 
@@ -53,7 +64,16 @@ public class Obstacles {
 	public static int getAvance() {
 		return AVANCE;
 	}
-
+	
+	public void setChangeSens(double x) {
+		changeSens=(int)x;
+	}
+	
+	public void setDelayHorizonMove (double x) {
+		int delay=(int)x;
+		if(delay>=DELAYMIN && delay<=DELAYMAX)
+			delayHorizonMove=delay;
+	}
 	/**
 	 * Cette methode get est un peu speciale car elle permet de recuperer l'index du point le plus proche en dessous du vehicule 
 	 * @return l'index du premier point dont l'abscisse est en dessous du vehicule
@@ -87,12 +107,19 @@ public class Obstacles {
 			
 			//on deplace les points d'obstacleList progressivement (tout les 2 pixels) a partir du moment ou ils depassent l'horizon
 			if (obstacleList.get(i).y>Affichage.getHorizon()) {
-				if(obstacleList.get(i).y%3==0) {
-				if(i%2==0)
-					obstacleList.get(i).x-=MOUVEMENT;
-				else
-					obstacleList.get(i).x+=MOUVEMENT;
+				if(obstacleList.get(i).y%this.delayHorizonMove==0) {
+					if(obstacleListBool.get(i))   //un requin va vers la gauche (puis vers la droite plus tard) ou inversement selon son booleen associe.			
+						obstacleList.get(i).x-=MOUVEMENT;
+					else
+						obstacleList.get(i).x+=MOUVEMENT;
 				}
+			   if(obstacleList.get(i).y%changeSens==0) { //tout les 80 pixels on change de sens
+				   if(obstacleListBool.get(i))		   
+					   obstacleListBool.set(i, false);
+				   else
+					   obstacleListBool.set(i, true);  
+			   }
+				   
 			}	
 
 		}
@@ -108,6 +135,7 @@ public class Obstacles {
 		int ByeByeY =obstacleList.get(0).y;//on recup l'ordonnee du premier point de obstacleList
 		if(ByeByeY>=Affichage.getHauteurFenetre()+ESPACE_MAX) { //si l'ordonnee ByeByeY (du premier point de la list) est sorti de la fenetre (en bas),				
 			this.obstacleList.remove(0); // on supprime ce premier point pour obstacleList
+			this.obstacleListBool.remove(0);// on supprime en parallele le premier element de  obstacleListBool
 			ajouteFindeListeRandomP();//et on rajoute un point au bout de l' ObstacleList 		
 		}
 		mouvementHorizontalObstacles();			
@@ -126,6 +154,10 @@ public class Obstacles {
 		Point ob = new Point(x,y);
 
 		obstacleList.add(obstacleList.size(),ob); // on ajoute le point aux coordonees "aleatoires" a la fin de l'arraylist ligne
+		if(x%2==0)//on rajoute aléatoirement un bool true ou false a la fin de obstacleListBool celon que le random x soit pair ou impair
+			obstacleListBool.add(obstacleListBool.size(),true);
+		else
+			obstacleListBool.add(obstacleListBool.size(),false);
 
 	}
 
@@ -136,11 +168,16 @@ public class Obstacles {
 	 *  //pour le premier points de la liste, ont choisit nous meme les coordonnees pour laisser un temps de repit au joueur
 	 */
 	public void initList() {
+		//les deux if suivant sont pour réinitialiser les listes en cas de nouvelles parties
 		if(!obstacleList.isEmpty()) {
 			obstacleList.removeAll(obstacleList);
 		}
+		if (!obstacleListBool.isEmpty()) {
+			obstacleListBool.removeAll(obstacleListBool);
+		}
 		Point startObstacle = new Point(Affichage.getLargeurFenetre()/2,Affichage.getHorizon()-10); //on cree le premier point de ligneGauche (et ligneDroite) pour qu'il se situe a gauche (a droite) du vehicule
 		obstacleList.add(startObstacle); //on ajoute le startpoint a l'Arraylist obstacleList
+		obstacleListBool.add(true);
 		int y=Affichage.getHorizon(); //le premier y Random va commencer apres cet ord
 		while(y>-Affichage.getHauteurFenetre()) { //on veut creer des point jusqu'une fois la fenetre au dessus de la fenetre
 			y=(y-rand.nextInt(100))-ESPACE_MIN;//creation d'une ord random  avec un espace minimum entre deux ord
@@ -148,6 +185,10 @@ public class Obstacles {
 			int x=rand.nextInt(BORNE_MAX)+BORNE_MIN;
 			Point pObs = new Point(x,y); //on dÃ©cale l'absc pour correspondre a un point a droite (pour ligneDroite)		
 			obstacleList.add(pObs); // on ajoute le point aux coordonees "aleatoires" a l'arraylist obstacleList
+			if(x%2==0)//on rajoute aléatoirement un bool true ou false a obstacleListBool celon que le random x soit pair ou impair
+				obstacleListBool.add(true);
+			else
+				obstacleListBool.add(false);
 		}
 	}
 
