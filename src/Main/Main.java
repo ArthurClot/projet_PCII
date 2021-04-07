@@ -44,7 +44,7 @@ public class Main {
 		Horloge timer=new Horloge(etat);
 		
 		new Thread(avancer).start();	// déroulement de la route
-		new Thread(timer).start();
+		new Thread(timer).start();      // minuteur
 	  }		
 
 }

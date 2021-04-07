@@ -3,7 +3,6 @@ package Controller;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-
 import Modele.Etat;
 import Vue.Affichage;
 
@@ -14,13 +13,13 @@ public class Controls implements KeyListener {
 
 	private Affichage affichage ;
 	private Etat etat;
-	//private Avancer avancer;
+	
 	
 	//CONSTRUCTEUR:
 	public Controls(Affichage aff,Etat eta){
 		this.affichage=aff;
 		this.etat=eta;
-		//this.avancer=ava;
+		
 	}
 
 	
@@ -29,15 +28,12 @@ public class Controls implements KeyListener {
 		affichage.setDirection(0); //code pour STRAIGHT (par defaut)
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_SPACE:
-			affichage.setFlagDeDebut(true);
+			affichage.setFlagDeDebut(true);//pour indiquer que "cest bon on a appuye"
 			if(Avancer.getFlagDeFin()) {
 				affichage.DebutDePartie(); //redemmarer la partie
 				affichage.revalidate();	
 			}
 			break;
-		/*case KeyEvent.VK_DOWN:
-			etat.move(Direction.down);//aller en bas
-			break;*/
 		case KeyEvent.VK_LEFT:
 			affichage.setDirection(1);//code pour left	
 			etat.move(Direction.left);//aller a' gauche
@@ -60,15 +56,12 @@ public class Controls implements KeyListener {
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		//this.keyMove( e);
+	
 	}
 	
 	
-	public void keyPressed(KeyEvent e) {
-		
-		this.keyMove (e);
-		
-	
+	public void keyPressed(KeyEvent e) {		
+		this.keyMove (e);			
 	}
 	
 	

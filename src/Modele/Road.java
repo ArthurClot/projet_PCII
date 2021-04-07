@@ -172,10 +172,10 @@ public class Road {
 		}
 		Point startG = new Point(DEPARTGAUCHE,Affichage.getOrdVehicule()+10); //on cree le premier point de ligneGauche (et ligneDroite) pour qu'il se situe a gauche (a droite) du vehicule
 		Point startD = new Point(DEPARTDROITE,Affichage.getOrdVehicule()+10);
-		ligneGauche.add(startG); //on ajoute les points aux Arraylist ligneBas et ligneHaut
+		ligneGauche.add(startG); //on ajoute les points de depart aux Arraylist ligneGauche et ligneDroite
 		ligneDroite.add(startD);		
 		int y=Affichage.getHauteurFenetre()-ESPACE_MIN; //le premier y Random va commencer apres cet ord
-		while(y>(-Affichage.getHauteurFenetre()*2)) { //on veut creer des point jusqu'a deux fois la  hauteur de la fenetre
+		while(y>(-Affichage.getHauteurFenetre()*2)) { //on veut creer des point jusqu'a deux fois la hauteur de la fenetre
 			y=(y-rand.nextInt(100))-ESPACE_MIN;//creation d'une ord random commun aux deux lignes avec un espace minimum entre deux ord
 			//ligne suivante: l'absc aleatoires de depart des points sont au centre de la fenetre.
 			int x=Affichage.getLargeurFenetre()/2; 
