@@ -14,9 +14,12 @@ public class Avancer implements Runnable {
 	private static final int TIMEMIN=4; //c'est la valeur minimale du temps que l'on veut entre chaque mise a jour du thread de défilment de la route (décide la vitesse).
 	private static final int TIMEMAX=60;//c'est la valeur maximale du temps que l'on peut rajouter entre chaque mise a jour du thread de défilment de la route (décide la vitesse).
 
-	private int ralentissementObstacle=15; //represente le cas ou l'on touche un obstacle (la valeur du rallentissement)
 	private  double time; //c'est le temps que l'on veut entre chaque mise a jour de la fenetre quand le parcours avance que l'on initialise au TIMEMAX-1);
-
+	
+	/**Pour la variation de la vitesse*/
+	private final int SLOW_OBSTACLES=15; //represente le cas ou l'on touche un obstacle (la valeur du ralentissement)
+	
+	//private int 
 	private boolean flagObstacle = false; //condition de ralentissement du a l'obstacle
 	private static boolean flagDeFin=true; //condition d'activation du Thread
 
@@ -60,8 +63,8 @@ public class Avancer implements Runnable {
 		if(etat.testRalentissementObstacles()) {		
 			if(!flagObstacle) {
 				flagObstacle=true;	//on ne ralenti la vitesse une seule fois quand on touche un obstacle		
-				if(this.time+ralentissementObstacle<TIMEMAX)
-					this.time+=ralentissementObstacle; 
+				if(this.time+SLOW_OBSTACLES<TIMEMAX)
+					this.time+=SLOW_OBSTACLES; 
 				else
 					flagDeFin=true;	
 			}

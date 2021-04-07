@@ -126,8 +126,8 @@ public class Etat {
 	 * puis elle trouve en operant un equation a une inconnue l'abcsisse du point la pente correspondant a l'ordonnee du centre du vehicule
 	 * et ceci pour l'ordonnee du point de la ligneGauche et celui de la ligneDroite
 	 * Enfin cette methode teste si la gauche du vehicule depasse l'abscisse du point de ligneGauche ou la droite du vehicule l'abscisse du point de ligneDroite
-	 * si cest le cas, elle renvoie le nombre de pixels d'espacement entre le  vehicule et de  la route .
-	 * @return Float indiquant le nombre de pixel d'eloignement entre le vehicule et de  la route.
+	 * si cest le cas, elle renvoie true sinon false
+	 * @return booleen indiquant  le vehicule est dans ou en dehors de la route.
 	 */
 	public boolean testRalentissementRoad() {
 
@@ -161,7 +161,10 @@ public class Etat {
 
 
 
-	//on récup differents points (un carré) pour la hit box des obstacles
+	/** Cette methode indique par un booleen si le vehicule touche ou non un obstacle.
+	 * pour cela il est cree une hitBox aux obstacles et l'on voit si le vehicule est sur les coordonnee de cette hotbox.
+	 * si oui on repond true, sinon false.
+	 */
 	//
 	public boolean testRalentissementObstacles() {
 		int tailleHitboxX=4;
@@ -201,10 +204,6 @@ public class Etat {
 	 */
 	public  void move(Controller.Direction d) {
 		switch (d) {
-		/*case up:				
-				break;
-			case down:				
-				break;*/
 		case right:
 			if(this.positionVehicule<(Affichage.getLargeurFenetre()-Affichage.getLargVehicule()-deplacement))
 				this.positionVehicule=this.positionVehicule+this.deplacement;
